@@ -490,26 +490,26 @@
 			}
 			islands = new THREE.Mesh(geometry, material)
 
-			loader.load('models/facebook.json', handle_load8);
+			loader.load('models/mainplatform.json', handle_load8);
 
 			function handle_load8(geometry, materials) {
 				var material = new THREE.MultiMaterial(materials);
 				material.morphTargets = true;
 
-				facebook = new THREE.Mesh(geometry, material);
-				//scene.add(facebook);
+				mainplatform = new THREE.Mesh(geometry, material);
+				scene.add(mainplatform);
 
-				DDDINK.addURL(facebook, "https://www.facebook.com/worldwidewev");
+				DDDINK.addURL(mainplatform, "https://www.facebook.com/worldwidewev");
 				DDDINK.domEvent.setGlobalLinkConfig('_self', 'ON', 'ON', 0xffffff);
 				DDDINK.readRendererObj(renderer, scene, camera);
 				DDDINK.domEvent.addFnc('Fn', 'A');
 
-				facebook.position.x = -43;
-				facebook.position.y = -8;
-				facebook.position.z = -4;
-				facebook.scale.set(1.75, 1.75, 1.75);
+
+				mainplatform.position.y = -35;
+
+				mainplatform.scale.set(1.75, 1.75, 1.75);
 			}
-			facebook = new THREE.Mesh(geometry, material)
+			mainplatform = new THREE.Mesh(geometry, material)
 
 			loader.load('models/cart.json', handle_load9);
 
@@ -670,7 +670,7 @@
 			soundcloud.rotation.y += -0.05;
 			twitter.rotation.y += -0.05;
 			//islands.rotation.y += -0.05;
-			facebook.rotation.y += -0.05;
+			//mainplatform.rotation.y += -0.05;
 			cart.rotation.y += -0.05;
 			mail.rotation.y += -0.05;
 
