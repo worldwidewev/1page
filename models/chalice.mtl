@@ -1,34 +1,24 @@
 # Blender MTL File: 'landingpage.blend'
-# Material Count: 3
+# Material Count: 2
 
-newmtl 1_VMtl010.001
-Ns 20.000005
+newmtl grass_bottom
+Ns 225.000000
 Ka 1.000000 1.000000 1.000000
-Kd 0.656300 0.656300 0.656300
-Ks 0.000000 0.000000 0.000000
-Ke 0.000000 0.000000 0.000000
-Ni 0.000000
-d 1.000000
-illum 1
-map_Kd /Users/trevor/Dropbox/wev/content/interactive/wev/TEXTURES/Nintendo 64 - Super Mario 64 - Lethal Lava Land/621A6A0A_c.png
-
-newmtl 2_VMtl035.001
-Ns 20.000005
-Ka 1.000000 1.000000 1.000000
-Kd 0.761700 0.761700 0.761700
-Ks 0.000000 0.000000 0.000000
-Ke 0.000000 0.000000 0.000000
-Ni 0.000000
-d 1.000000
-illum 1
-map_Kd /Users/trevor/Dropbox/wev/content/interactive/wev/TEXTURES/Nintendo 64 - Super Mario 64 - Lethal Lava Land/287771FA_c.png
-
-newmtl gold.001
-Ns 185.738176
-Ka 0.645714 0.645714 0.645714
-Kd 0.800000 0.637262 0.000000
-Ks 1.000000 1.000000 1.000000
+Kd 0.800000 0.800000 0.800000
+Ks 0.500000 0.500000 0.500000
 Ke 0.000000 0.000000 0.000000
 Ni 1.450000
 d 1.000000
-illum 3
+illum 2
+map_Kd /Users/trevor/Dropbox/wev/content/interactive/wev/TEXTURE_MASTER_COLLECTION/m64/stone/gray_smooth_stone.png
+
+newmtl island_grass
+Ns 225.000000
+Ka 1.000000 1.000000 1.000000
+Kd 0.800000 0.800000 0.800000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+d 1.000000
+illum 2
+map_Kd /Users/trevor/Dropbox/wev/content/interactive/wev/TEXTURE_MASTER_COLLECTION/m64/abstract/white_smooth_texture.png
