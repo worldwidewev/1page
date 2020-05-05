@@ -325,7 +325,7 @@
 
 			//objects
 			//spotify
-			loader.load('models/butterfly.json', handle_load1);
+			loader.load('models/star.json', handle_load1);
 
 			function handle_load1(geometry, materials) {
 
@@ -348,7 +348,7 @@
 
 
 				//spotify.position.x = -11;
-				spotify.position.y = 40;
+				spotify.position.y = 10;
 				spotify.position.z = -150;
 				spotify.scale.set(2, 2, 2);
 
@@ -358,24 +358,25 @@
 
 
 			//soundcloud
-			loader.load('models/soundcloudcoin.json', handle_load3);
+			loader.load('models/runway.json', handle_load3);
 
 			function handle_load3(geometry, materials) {
 				var material = new THREE.MultiMaterial(materials);
 				material.morphTargets = true;
 
 				soundcloud = new THREE.Mesh(geometry, material);
-				//scene.add(soundcloud);
+				scene.add(soundcloud);
 
 				DDDINK.addURL(soundcloud, "https://soundcloud.com/worldwidewev");
 				DDDINK.domEvent.setGlobalLinkConfig('_self', 'ON', 'ON', 0xffffff);
 				DDDINK.readRendererObj(renderer, scene, camera);
 				DDDINK.domEvent.addFnc('Fn', 'A');
 
-				soundcloud.position.x = 23;
-				soundcloud.position.y = -8;
-				soundcloud.position.z = -60;
+				soundcloud.position.x = 100;
+				soundcloud.position.y = -15;
+
 				soundcloud.scale.set(1.75, 1.75, 1.75);
+				soundcloud.rotation.y= 3.14159;
 			}
 			soundcloud = new THREE.Mesh(geometry, material);
 
@@ -443,8 +444,9 @@
 				DDDINK.readRendererObj(renderer, scene, camera);
 				DDDINK.domEvent.addFnc('Fn', 'A');
 
-				chalice.position.y = 10;
+				chalice.position.y = -10;
 				chalice.position.z = -150;
+				chalice.scale.set(2,2,2);
 
 				//chalice.rotation.x = 0.4;
 			}
@@ -586,18 +588,21 @@
 			}
 			presave = new THREE.Mesh(geometry, material)
 
-			loader.load('models/WEV.json', handle_load11);
+			loader.load('models/cd.json', handle_load11);
 
 			function handle_load11(geometry, materials) {
 				var material = new THREE.MultiMaterial(materials);
 				material.morphTargets = true;
 
 				wev = new THREE.Mesh(geometry, material);
-				//scene.add(wev);
+				scene.add(wev);
+				wev.position.x = -100;
+				wev.position.y = -15;
+
+				wev.scale.set(1.75, 1.75, 1.75);
+				wev.rotation.y= 3.14159;
 
 
-				wev.position.y = 50;
-				wev.position.z = -20;
 
 
 			}
@@ -667,7 +672,7 @@
 			spotify.rotation.y += -0.05;
 			apple.rotation.y += -0.05;
 			bandcamp.rotation.y += -0.05;
-			soundcloud.rotation.y += -0.05;
+			//soundcloud.rotation.y += -0.05;
 			twitter.rotation.y += -0.05;
 			//islands.rotation.y += -0.05;
 			//mainplatform.rotation.y += -0.05;
