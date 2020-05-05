@@ -100,6 +100,8 @@
 </head>
 
 <body>
+
+
 	<div id="overlay">
 		<div>
 			<button id="startButton">ENTER</button>
@@ -115,16 +117,6 @@
 	<script src="js/CSS3DRenderer.js"></script>
 	<script src="js/stats.min.js"></script>
 
-	<script type="x-shader/x-vertex" id="vertexshader">
-		attribute float size; attribute vec3 customColor; varying vec3 vColor; void main() { vColor = customColor; vec4 mvPosition = modelViewMatrix * vec4( position, 1.0 ); gl_PointSize = size * ( 300.0 / -mvPosition.z ); gl_Position = projectionMatrix * mvPosition;
-		}
-	</script>
-
-	<script type="x-shader/x-fragment" id="fragmentshader">
-		uniform vec3 color; uniform sampler2D texture; varying vec3 vColor; void main() { gl_FragColor = vec4( color * vColor, 1.0 ); gl_FragColor = gl_FragColor * texture2D( texture, gl_PointCoord ); if ( gl_FragColor.a
-		< ALPHATEST ) discard; } </script>
-
-
 	<script>
 		if (WEBGL.isWebGLAvailable() === false) {
 			document.body.appendChild(WEBGL.getWebGLErrorMessage());
@@ -132,8 +124,6 @@
 
 		var renderer, renderer2, scene, camera, stats, controls;
 		var container, stats, clock, mixer;
-		var particles, uniforms;
-		var PARTICLE_SIZE = 20;
 		var raycaster, intersects;
 		var coins = [];
 		var mouse, INTERSECTED;
@@ -156,7 +146,7 @@
 			var container = document.getElementById('container');
 
 			scene = new THREE.Scene();
-			scene.fog = new THREE.Fog( 0x162438, 75, 700 );
+			scene.fog = new THREE.Fog(0x162438, 75, 700);
 			//scene.background = new THREE.Color( 0x0c0096 );
 
 
@@ -171,51 +161,17 @@
 			var light2 = new THREE.PointLight(0xffffff, 0.1);
 			scene.add(light2);
 
-			//
-			var vertices = new THREE.BoxGeometry(200, 200, 200, 16, 16, 16).vertices;
-			var positions = new Float32Array(vertices.length * 3);
-			var colors = new Float32Array(vertices.length * 3);
-			var sizes = new Float32Array(vertices.length);
-			var vertex;
-			var color = new THREE.Color();
-			for (var i = 0, l = vertices.length; i < l; i++) {
-				vertex = vertices[i];
-				vertex.toArray(positions, i * 3);
 
-				color.toArray(colors, i * 3);
-				sizes[i] = PARTICLE_SIZE * 0.5;
-			}
 			var geometry = new THREE.BufferGeometry();
-			geometry.addAttribute('position', new THREE.BufferAttribute(positions, 3));
-			geometry.addAttribute('customColor', new THREE.BufferAttribute(colors, 3));
-			geometry.addAttribute('size', new THREE.BufferAttribute(sizes, 1));
-			//
-			var material = new THREE.ShaderMaterial({
-				uniforms: {
-					color: {
-						value: new THREE.Color(0xffffff)
-					},
-					texture: {
-						value: new THREE.TextureLoader().load("textures/star.png")
-					}
-				},
-				vertexShader: document.getElementById('vertexshader').textContent,
-				fragmentShader: document.getElementById('fragmentshader').textContent,
-				alphaTest: 0.9
-			});
-			//
-			particles = new THREE.Points(geometry, material);
-			//scene.add(particles);
-			//
+
+			var material = new THREE.ShaderMaterial();
+
 			renderer = new THREE.WebGLRenderer();
 			renderer.setPixelRatio(window.devicePixelRatio);
 			renderer.setSize(window.innerWidth, window.innerHeight);
 			container.appendChild(renderer.domElement);
 
-			renderer2 = new THREE.CSS3DRenderer();
-			renderer2.setSize(window.innerWidth, window.innerHeight);
-			container.appendChild(renderer2.domElement);
-			//
+
 			window.mobilecheck = function() {
 				var check = false;
 				(function(a) {
@@ -279,49 +235,6 @@
 			//
 			var loader = new THREE.JSONLoader();
 
-			var Element = function(id, x, y, z, ry) {
-
-				var div = document.createElement('div');
-				div.style.width = '480px';
-				div.style.height = '360px';
-				div.style.backgroundColor = '#000';
-
-				var iframe = document.createElement('iframe');
-				iframe.style.width = '480px';
-				iframe.style.height = '360px';
-				iframe.style.border = '0px';
-				iframe.src = ['https://www.youtube.com/embed/', id, '?rel=0'].join('');
-				div.appendChild(iframe);
-
-				var object = new THREE.CSS3DObject(div);
-				object.position.set(x, y, z);
-				object.rotation.y = ry;
-
-				return object;
-
-			};
-
-			var group = new THREE.Group();
-			group.add(new Element('SJOz3qjfQXU', 0, 0, 240, 0));
-			group.add(new Element('Y2-xZ-1HE-Q', 240, 0, 0, Math.PI / 2));
-			group.add(new Element('IrydklNpcFI', 0, 0, -240, Math.PI));
-			group.add(new Element('9ubytEsCaS0', -240, 0, 0, -Math.PI / 2));
-			scene.add(group);
-
-			var WIDTH = window.innerWidth;
-			var HEIGHT = window.innerHeight;
-			var mirrorgeometry = new THREE.PlaneBufferGeometry(35, 35);
-			var verticalMirror = new THREE.Reflector(mirrorgeometry, {
-				clipBias: 0.05,
-				textureWidth: WIDTH * window.devicePixelRatio,
-				textureHeight: HEIGHT * window.devicePixelRatio,
-				color: 0x889999,
-				recursion: 0.5
-			});
-			verticalMirror.position.y = 0;
-			verticalMirror.position.z = 30;
-			verticalMirror.rotation.y = 3.14159;
-			//scene.add(verticalMirror);
 
 			//objects
 			//spotify
@@ -332,53 +245,52 @@
 				var material = new THREE.MultiMaterial(materials);
 				material.morphTargets = true;
 
-				spotify = new THREE.Mesh(geometry, material);
-				//spotify.userData = {URL: "https://open.spotify.com/artist/1KpEYlQPQN64r0aRE9Wg6i"};
+				star = new THREE.Mesh(geometry, material);
 
 
-				scene.add(spotify);
-				group.add(spotify);
 
-				DDDINK.addURL(spotify, "https://open.spotify.com/artist/1KpEYlQPQN64r0aRE9Wg6i");
+				scene.add(star);
+
+
+				DDDINK.addURL(star, "https://open.spotify.com/artist/1KpEYlQPQN64r0aRE9Wg6i");
 				DDDINK.domEvent.setGlobalLinkConfig('_self', 'ON', 'ON', 0xffffff);
-				spotify.userData.linkConfig.setShineOnMouse('ON')
-				spotify.userData.linkConfig.setNewTab('ON');
+				star.userData.linkConfig.setShineOnMouse('ON')
+				star.userData.linkConfig.setNewTab('ON');
 				DDDINK.readRendererObj(renderer, scene, camera);
 				DDDINK.domEvent.addFnc('Fn', 'A');
 
 
-				//spotify.position.x = -11;
-				spotify.position.y = 10;
-				spotify.position.z = -150;
-				spotify.scale.set(2, 2, 2);
+				star.position.y = 10;
+				star.position.z = -150;
+				star.scale.set(2, 2, 2);
 
 			}
 
-			spotify = new THREE.Mesh(geometry, material);
+			star = new THREE.Mesh(geometry, material);
 
 
-			//soundcloud
+			//runway
 			loader.load('models/runway.json', handle_load3);
 
 			function handle_load3(geometry, materials) {
 				var material = new THREE.MultiMaterial(materials);
 				material.morphTargets = true;
 
-				soundcloud = new THREE.Mesh(geometry, material);
-				scene.add(soundcloud);
+				runway = new THREE.Mesh(geometry, material);
+				scene.add(runway);
 
-				DDDINK.addURL(soundcloud, "https://soundcloud.com/worldwidewev");
+				DDDINK.addURL(runway, "https://soundcloud.com/worldwidewev");
 				DDDINK.domEvent.setGlobalLinkConfig('_self', 'ON', 'ON', 0xffffff);
 				DDDINK.readRendererObj(renderer, scene, camera);
 				DDDINK.domEvent.addFnc('Fn', 'A');
 
-				soundcloud.position.x = 100;
-				soundcloud.position.y = -15;
+				runway.position.x = 100;
+				runway.position.y = -15;
 
-				soundcloud.scale.set(1.75, 1.75, 1.75);
-				soundcloud.rotation.y= 3.14159;
+				runway.scale.set(1.75, 1.75, 1.75);
+				runway.rotation.y = 3.14159;
 			}
-			soundcloud = new THREE.Mesh(geometry, material);
+			runway = new THREE.Mesh(geometry, material);
 
 			//apple
 			loader.load('models/applemusiccoin.json', handle_load2);
@@ -446,7 +358,7 @@
 
 				chalice.position.y = -10;
 				chalice.position.z = -150;
-				chalice.scale.set(2,2,2);
+				chalice.scale.set(2, 2, 2);
 
 				//chalice.rotation.x = 0.4;
 			}
@@ -540,17 +452,17 @@
 				var material = new THREE.MultiMaterial(materials);
 				material.morphTargets = true;
 
-				mail = new THREE.Mesh(geometry, material);
-				scene.add(mail);
+				globe = new THREE.Mesh(geometry, material);
+				scene.add(globe);
 
-				DDDINK.addURL(mail, "mailto:hello@wev.world/");
+				DDDINK.addURL(globe, "mailto:hello@wev.world/");
 				DDDINK.domEvent.setGlobalLinkConfig('_self', 'ON', 'ON', 0xffffff);
 				DDDINK.readRendererObj(renderer, scene, camera);
 				DDDINK.domEvent.addFnc('Fn', 'A');
 
-				//mail.scale.set(3,3,3);
+				//globe.scale.set(3,3,3);
 			}
-			mail = new THREE.Mesh(geometry, material)
+			globe = new THREE.Mesh(geometry, material)
 
 			loader.load('models/OStext.json', handle_load10);
 
@@ -592,16 +504,16 @@
 				var material = new THREE.MultiMaterial(materials);
 				material.morphTargets = true;
 
-				wev = new THREE.Mesh(geometry, material);
-				scene.add(wev);
-				wev.position.x = -100;
-				wev.position.y = -15;
+				cd = new THREE.Mesh(geometry, material);
+				scene.add(cd);
+				cd.position.x = -100;
+				cd.position.y = -15;
 
-				wev.scale.set(1.75, 1.75, 1.75);
-				wev.rotation.y= 3.14159;
+				cd.scale.set(1.75, 1.75, 1.75);
+				cd.rotation.y = 3.14159;
 
 			}
-			wev = new THREE.Mesh(geometry, material)
+			cd = new THREE.Mesh(geometry, material)
 
 			loader.load('models/lookup.json', handle_load12);
 
@@ -618,7 +530,7 @@
 
 
 			}
-			wev = new THREE.Mesh(geometry, material)
+			cd = new THREE.Mesh(geometry, material)
 
 
 
@@ -664,39 +576,21 @@
 			//thecamera.lookAt(camera.position);
 
 
-			spotify.rotation.y += -0.05;
-			apple.rotation.y += -0.05;
-			bandcamp.rotation.y += -0.05;
-			//soundcloud.rotation.y += -0.05;
-			twitter.rotation.y += -0.05;
+			star.rotation.y += -0.05;
+			//apple.rotation.y += -0.05;
+			//bandcamp.rotation.y += -0.05;
+			//runway.rotation.y += -0.05;
+			//twitter.rotation.y += -0.05;
 			//islands.rotation.y += -0.05;
 			//mainplatform.rotation.y += -0.05;
-			cart.rotation.y += -0.05;
-			//mail.rotation.y += -0.05;
+			//cart.rotation.y += -0.05;
+			//globe.rotation.y += -0.05;
 
 
-			particles.rotation.x += 0.0005;
-			particles.rotation.y += 0.001;
 
-			var geometry = particles.geometry;
-			var attributes = geometry.attributes;
-			raycaster.setFromCamera(mouse, camera);
-			intersects = raycaster.intersectObject(particles);
-			if (intersects.length > 0) {
-				if (INTERSECTED != intersects[0].index) {
-					attributes.size.array[INTERSECTED] = PARTICLE_SIZE;
-					INTERSECTED = intersects[0].index;
-					attributes.size.array[INTERSECTED] = PARTICLE_SIZE * 1.25;
-					attributes.size.needsUpdate = true;
-				}
-			} else if (INTERSECTED !== null) {
-				attributes.size.array[INTERSECTED] = PARTICLE_SIZE;
-				attributes.size.needsUpdate = true;
-				INTERSECTED = null;
-			}
 
 			renderer.render(scene, camera);
-			renderer2.render(scene, camera);
+
 		}
 	</script>
 
