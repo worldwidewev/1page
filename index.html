@@ -534,23 +534,21 @@
 			}
 			cart = new THREE.Mesh(geometry, material)
 
-			loader.load('models/mail.json', handle_load13);
+			loader.load('models/globe.json', handle_load13);
 
 			function handle_load13(geometry, materials) {
 				var material = new THREE.MultiMaterial(materials);
 				material.morphTargets = true;
 
 				mail = new THREE.Mesh(geometry, material);
-				//scene.add(mail);
+				scene.add(mail);
 
 				DDDINK.addURL(mail, "mailto:hello@wev.world/");
 				DDDINK.domEvent.setGlobalLinkConfig('_self', 'ON', 'ON', 0xffffff);
 				DDDINK.readRendererObj(renderer, scene, camera);
 				DDDINK.domEvent.addFnc('Fn', 'A');
 
-				mail.position.x = 23;
-				mail.position.y = 10;
-				mail.position.z = -30;
+				//mail.scale.set(3,3,3);
 			}
 			mail = new THREE.Mesh(geometry, material)
 
@@ -601,9 +599,6 @@
 
 				wev.scale.set(1.75, 1.75, 1.75);
 				wev.rotation.y= 3.14159;
-
-
-
 
 			}
 			wev = new THREE.Mesh(geometry, material)
@@ -677,7 +672,7 @@
 			//islands.rotation.y += -0.05;
 			//mainplatform.rotation.y += -0.05;
 			cart.rotation.y += -0.05;
-			mail.rotation.y += -0.05;
+			//mail.rotation.y += -0.05;
 
 
 			particles.rotation.x += 0.0005;
