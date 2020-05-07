@@ -100,10 +100,6 @@
 </head>
 
 <body>
-
-
-
-
   <div id="overlay">
     <div>
       <button id="startButton">ENTER</button>
@@ -113,6 +109,7 @@
 
   <script type="module">
     import * as THREE from '/node_modules/three/build/three.module.js';
+
     import {
       DeviceOrientationControls
     } from '/node_modules/three/examples/jsm/controls/DeviceOrientationControls.js';
@@ -122,6 +119,8 @@
     import {
       GLTFLoader
     } from '/node_modules/three/examples/jsm/loaders/GLTFLoader.js';
+
+    import { SkeletonUtils } from '/node_modules/three/examples/jsm/utils/SkeletonUtils.js';
     import Stats from '/node_modules/three/examples/jsm/libs/stats.module.js';
     import {
       TrackballControls
@@ -131,77 +130,281 @@
       CSS3DObject
     } from '/node_modules/three/examples/jsm/renderers/CSS3DRenderer.js';
 
+    var controls;
+    var container;
+    var raycaster;
+    var mouse;
 
 
-    var renderer, renderer2, scene, camera, stats, controls;
-    var container, stats, mixer;
-    var raycaster, intersects;
-    var coins = [];
-    var mouse, INTERSECTED;
-    var clock = new THREE.Clock();
+    var worldScene = null;
+    var renderer = null;
+    var camera = null;
+    var clock = null;
+    var mixers = [];
+    var MODELS = [{
+        name: "star"
+      },
+      {
+        name: "runwayanim"
+      },
+      {
+        name: "cd"
+      },
 
+    ];
+    var UNITS = [{
+        modelName: "star",
+        meshName: "Sphere.004",
+        position: {
+          x: 0,
+          y: -15,
+          z: -150
+        },
 
+        scale: 1,
+      },
+
+      {
+        modelName: "runwayanim",
+        position: {
+          x: 50,
+          y: -5,
+          z: 0
+        },
+        rotation: {
+          x: 0,
+          y: 3.14159,
+          z: 0
+        },
+        scale: 1,
+      },
+      {
+        modelName: "cd",
+        position: {
+          x: -50,
+          y: -5,
+          z: 0
+        },
+        rotation: {
+          x: 0,
+          y: 3.14159,
+          z: 0
+        },
+        scale: 1,
+      },
+
+    ];
+
+    var numLoadedModels = 0;
 
 
     var startButton = document.getElementById('startButton');
     startButton.addEventListener('click', function() {
 
       init();
+      loadModels();
       animate();
 
     }, false);
 
-    function init() {
+    function loadModels() {
 
+      for (var i = 0; i < MODELS.length; ++i) {
+
+        var m = MODELS[i];
+
+        loadGltfModel(m, function() {
+
+          ++numLoadedModels;
+
+          if (numLoadedModels === MODELS.length) {
+
+            console.log("All models loaded, time to instantiate units...");
+            instantiateUnits();
+
+          }
+
+        });
+
+      }
+
+    }
+
+    function instantiateUnits() {
+
+    				var numSuccess = 0;
+
+    				for ( var i = 0; i < UNITS.length; ++ i ) {
+
+    					var u = UNITS[ i ];
+    					var model = getModelByName( u.modelName );
+
+    					if ( model ) {
+
+    						var clonedScene = SkeletonUtils.clone( model.scene );
+
+    						if ( clonedScene ) {
+
+    							// THREE.Scene is cloned properly, let's find one mesh and launch animation for it
+    							var clonedMesh = clonedScene.getObjectByName();
+
+    							if ( clonedMesh ) {
+
+    								var mixer = startAnimation( clonedMesh, model.animations );
+
+    								// Save the animation mixer in the list, will need it in the animation loop
+    								mixers.push( mixer );
+    								numSuccess ++;
+
+    							}
+
+    							// Different models can have different configurations of armatures and meshes. Therefore,
+    							// We can't set position, scale or rotation to individual mesh objects. Instead we set
+    							// it to the whole cloned scene and then add the whole scene to the game world
+    							// Note: this may have weird effects if you have lights or other items in the GLTF file's scene!
+    							worldScene.add( clonedScene );
+
+    							if ( u.position ) {
+
+    								clonedScene.position.set( u.position.x, u.position.y, u.position.z );
+
+    							}
+
+    							if ( u.scale ) {
+
+    								clonedScene.scale.set( u.scale, u.scale, u.scale );
+
+    							}
+
+    							if ( u.rotation ) {
+
+    								clonedScene.rotation.x = u.rotation.x;
+    								clonedScene.rotation.y = u.rotation.y;
+    								clonedScene.rotation.z = u.rotation.z;
+
+    							}
+
+    					        }
+
+    					} else {
+
+    						console.error( "Can not find model", u.modelName );
+
+    					}
+
+    				}
+
+    				console.log( `Successfully instantiated ${numSuccess} units` );
+
+
+    			}
+
+
+          function startAnimation( skinnedMesh, animations, animationName ) {
+
+            var mixer = new THREE.AnimationMixer( model );
+
+            mixer.clipAction( gltf.animations[ 0 ] ).play();
+
+  			}
+
+
+
+    function getModelByName(name) {
+
+      for (var i = 0; i < MODELS.length; ++i) {
+
+        if (MODELS[i].name === name) {
+
+          return MODELS[i];
+
+        }
+
+      }
+
+      return null;
+
+    }
+
+    function loadGltfModel(model, onLoaded) {
+
+      var loader = new GLTFLoader();
+      var modelName = "/models/" + model.name + ".gltf";
+
+      loader.load(modelName, function(gltf) {
+
+        var scene = gltf.scene;
+
+        model.animations = gltf.animations;
+        model.scene = scene;
+
+        console.log("Done loading model", model.name);
+
+        onLoaded();
+
+      });
+
+    }
+    function animate() {
+
+      requestAnimationFrame(animate);
+      var mixerUpdateDelta = clock.getDelta();
+      for (var i = 0; i < mixers.length; ++i) {
+
+        mixers[i].update(mixerUpdateDelta);
+
+      }
+
+      renderer.render(worldScene, camera);
+    controls.update();
+    }
+
+    function init() {
+      //remove overlay
       var overlay = document.getElementById('overlay');
       overlay.remove();
-
+      //container
       var container = document.getElementById('container');
 
-      scene = new THREE.Scene();
-      //scene.fog = new THREE.Fog(0x162438, 75, 700);
-      //scene.background = new THREE.Color( 0x0c0096 );
+      //Clock
+      clock = new THREE.Clock();
+      //scene
+      worldScene = new THREE.Scene();
+      //scene.fog = new THREE.Fog(0x162438, 30, 300);
 
 
+      //renderer
+      renderer = new THREE.WebGLRenderer();
+      renderer.setPixelRatio(window.devicePixelRatio);
+      renderer.setSize(window.innerWidth, window.innerHeight);
+      container.appendChild(renderer.domElement);
 
+      //camera
       camera = new THREE.PerspectiveCamera(40, window.innerWidth / window.innerHeight, 0.1, 15000);
       camera.position.z = 6;
-
       //lights
       var light = new THREE.AmbientLight(0xffffff, 1);
-      scene.add(light);
-
+      worldScene.add(light);
       var light2 = new THREE.PointLight(0xffffff, 0.1);
-      scene.add(light2);
+      worldScene.add(light2);
 
       // ground
-      var mesh = new THREE.Mesh(new THREE.PlaneBufferGeometry(200, 200), new THREE.MeshPhongMaterial({
+      var geometry = new THREE.BufferGeometry();
+      var mesh = new THREE.Mesh(new THREE.PlaneBufferGeometry(200, 100), new THREE.MeshPhongMaterial({
         color: 0x999999,
         depthWrite: false
       }));
       mesh.rotation.x = -Math.PI / 2;
       mesh.receiveShadow = true;
       mesh.position.y = -20;
-      scene.add(mesh);
-
-      var grid = new THREE.GridHelper(200, 20, 0x000000, 0x000000);
-      grid.material.opacity = 0.5;
+      worldScene.add(mesh);
+      var grid = new THREE.GridHelper(500, 100, 0xbfbfbf, 0xbfbfbf);
+      grid.material.opacity = 0.25;
       grid.material.transparent = false;
       grid.position.y = -20;
-      scene.add(grid);
+      worldScene.add(grid);
 
-      var geometry = new THREE.BufferGeometry();
-      //
-
-
-      renderer = new THREE.WebGLRenderer();
-      renderer.setPixelRatio(window.devicePixelRatio);
-      renderer.setSize(window.innerWidth, window.innerHeight);
-      container.appendChild(renderer.domElement);
-
-
-
-      //
+      //mobile check
       window.mobilecheck = function() {
         var check = false;
         (function(a) {
@@ -222,6 +425,8 @@
         //controls.enablePan = false;
         //controls.enableZoom = false;
       }
+
+
       //skybox
       var materialArray = [];
       var texture_nx = new THREE.TextureLoader().load('./textures/nx.png');
@@ -255,34 +460,14 @@
 
       var skyboxGeo = new THREE.BoxGeometry(1000, 1000, 1000);
       var skybox = new THREE.Mesh(skyboxGeo, materialArray);
-      scene.add(skybox);
+      worldScene.add(skybox);
 
-
+      //for 3dink i think
       raycaster = new THREE.Raycaster();
-
       mouse = new THREE.Vector2();
 
-      var loader = new GLTFLoader();
-      loader.load(
-	// resource URL
-	'/models/adelinetest.gltf',function ( gltf ) {
-    mixer = new THREE.AnimationMixer( gltf.scene );
-    	var action = mixer.clipAction( gltf.animations[ 0 ] );
-    	action.play();
 
-    	scene.add( gltf.scene );
-
-
-		gltf.animations; // Array<THREE.AnimationClip>
-		gltf.scene; // THREE.Group
-		gltf.scenes; // Array<THREE.Group>
-		gltf.cameras; // Array<THREE.Camera>
-		gltf.asset; // Object
-
-	});
-
-
-
+      //resize stuff
       window.addEventListener('resize', onWindowResize, false);
       document.addEventListener('mousemove', onDocumentMouseMove, false);
     }
@@ -301,39 +486,10 @@
       renderer.setSize(window.innerWidth, window.innerHeight);
     }
 
-    function animate() {
-      requestAnimationFrame(animate);
-
-      controls.update();
-      render();
-      //stats.update();
-    }
-
-    var prevTime = Date.now();
 
 
 
 
-    function render() {
-
-      var timer = Date.now() * 0.0005;
-
-      //star.rotation.y += -0.05;
-      //apple.rotation.y += -0.05;
-      //bandcamp.rotation.y += -0.05;
-      //soundcloud.rotation.y += -0.05;
-      //twitter.rotation.y += -0.05;
-      //islands.rotation.y += -0.05;
-      //mainplatform.rotation.y += -0.05;
-      //cart.rotation.y += -0.05;
-      //mail.rotation.y += -0.05;
-      var delta = clock.getDelta();
-
-      if (mixer) mixer.update(delta);
-      renderer.render(scene, camera);
-
-
-    }
   </script>
 
 </body>
