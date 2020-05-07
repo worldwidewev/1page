@@ -132,12 +132,23 @@
     var MODELS = [{
         name: "star"
       },
-      {
-        name: "runway"
-      },
+
       {
         name: "cd"
       },
+
+      {
+        name: "starbase"
+      },
+
+      {
+        name: "runway"
+      },
+
+      {
+        name: "runway2"
+      },
+
 
       {
         name: "model1"
@@ -149,6 +160,10 @@
 
       {
         name: "model3"
+      },
+
+      {
+        name: "islands"
       },
     ];
 
@@ -257,6 +272,11 @@
 
     function loadGltfModel(model, onLoaded) {
 
+
+      raycaster = new THREE.Raycaster();
+
+      mouse = new THREE.Vector2();
+
       var loader = new THREE.GLTFLoader();
       var modelName = "models/" + model.name + ".gltf";
 
@@ -277,6 +297,7 @@
 
           });
 
+
         var mixer = new THREE.AnimationMixer( model );
 
         if(gltf.animations.length) {
@@ -284,17 +305,23 @@
           mixers.push(mixer);
         }
 
-
-        if (numLoadedModels === 1) {
-          DDDINK.addURL(model, "https://itunes.apple.com/us/artist/wev/1356660469");
-          DDDINK.domEvent.setGlobalLinkConfig('_self', 'ON', 'ON', 0xffffff);
-          DDDINK.readRendererObj(renderer, worldScene, camera);
-          DDDINK.domEvent.addFnc('Fn', 'A');
-
+        if(numLoadedModels === 1) {
+          // this is the star and the base i think
+          model.children.forEach(function(child) {
+            // add a link to each of the meshes that create the sum "star" gltf model
+            DDDINK.addURL(child, "https://itunes.apple.com/us/artist/wev/1356660469");
+            DDDINK.domEvent.setGlobalLinkConfig('_self', 'ON', 'ON', 0xffffff);
+            //child.userData.linkConfig.setShineOnMouse('ON')
+            child.userData.linkConfig.setNewTab('ON');
+            DDDINK.readRendererObj(renderer, worldScene, camera);
+            DDDINK.domEvent.addFnc('Fn', 'A');
+          });
         }
-
         if (numLoadedModels === MODELS.length) {
           console.log("All models loaded, time to start animating...");
+
+
+
 
           animate();
         }
@@ -348,15 +375,8 @@
 
       // ground
       var geometry = new THREE.BufferGeometry();
-      var mesh = new THREE.Mesh(new THREE.PlaneBufferGeometry(200, 100), new THREE.MeshPhongMaterial({
-        color: 0x999999,
-        depthWrite: false
-      }));
-      mesh.rotation.x = -Math.PI / 2;
-      mesh.receiveShadow = true;
-      mesh.position.y = -20;
-      worldScene.add(mesh);
-      var grid = new THREE.GridHelper(500, 100, 0xbfbfbf, 0xbfbfbf);
+
+      var grid = new THREE.GridHelper(500, 50, 0xbfbfbf, 0xbfbfbf);
       grid.material.opacity = 0.25;
       grid.material.transparent = false;
       grid.position.y = -20;
