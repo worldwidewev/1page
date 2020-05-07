@@ -147,6 +147,9 @@
         name: "model2"
       },
 
+      {
+        name: "model3"
+      },
     ];
 
     var UNITS = [{
@@ -194,10 +197,7 @@
 
     var numLoadedModels = 0;
 
-    DDDINK.addURL(star, "https://itunes.apple.com/us/artist/wev/1356660469");
-    DDDINK.domEvent.setGlobalLinkConfig('_self', 'ON', 'ON', 0xffffff);
-    DDDINK.readRendererObj(renderer, scene, camera);
-    DDDINK.domEvent.addFnc('Fn', 'A');
+
 
 
     var startButton = document.getElementById('startButton');
@@ -284,8 +284,18 @@
           mixers.push(mixer);
         }
 
+
+        if (numLoadedModels === 1) {
+          DDDINK.addURL(model, "https://itunes.apple.com/us/artist/wev/1356660469");
+          DDDINK.domEvent.setGlobalLinkConfig('_self', 'ON', 'ON', 0xffffff);
+          DDDINK.readRendererObj(renderer, worldScene, camera);
+          DDDINK.domEvent.addFnc('Fn', 'A');
+
+        }
+
         if (numLoadedModels === MODELS.length) {
           console.log("All models loaded, time to start animating...");
+
           animate();
         }
 
