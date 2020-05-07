@@ -108,27 +108,27 @@
   <div id="container"></div>
 
   <script type="module">
-    import * as THREE from '/node_modules/three/build/three.module.js';
+    import * as THREE from './node_modules/three/build/three.module.js';
 
     import {
       DeviceOrientationControls
-    } from '/node_modules/three/examples/jsm/controls/DeviceOrientationControls.js';
+    } from './node_modules/three/examples/jsm/controls/DeviceOrientationControls.js';
     import {
       OrbitControls
-    } from '/node_modules/three/examples/jsm/controls/OrbitControls.js';
+    } from './node_modules/three/examples/jsm/controls/OrbitControls.js';
     import {
       GLTFLoader
-    } from '/node_modules/three/examples/jsm/loaders/GLTFLoader.js';
+    } from './node_modules/three/examples/jsm/loaders/GLTFLoader.js';
 
-    import { SkeletonUtils } from '/node_modules/three/examples/jsm/utils/SkeletonUtils.js';
-    import Stats from '/node_modules/three/examples/jsm/libs/stats.module.js';
+    import { SkeletonUtils } from './node_modules/three/examples/jsm/utils/SkeletonUtils.js';
+    import Stats from './node_modules/three/examples/jsm/libs/stats.module.js';
     import {
       TrackballControls
-    } from '/node_modules/three/examples/jsm/controls/TrackballControls.js';
+    } from './node_modules/three/examples/jsm/controls/TrackballControls.js';
     import {
       CSS3DRenderer,
       CSS3DObject
-    } from '/node_modules/three/examples/jsm/renderers/CSS3DRenderer.js';
+    } from './node_modules/three/examples/jsm/renderers/CSS3DRenderer.js';
 
     var controls;
     var container;
@@ -141,17 +141,24 @@
     var camera = null;
     var clock = null;
     var mixers = [];
+    var loadedModels = [];
+
     var MODELS = [{
         name: "star"
       },
       {
-        name: "runwayanim"
+        name: "runway"
       },
       {
         name: "cd"
       },
 
+      {
+        name: "model1"
+      },
+
     ];
+
     var UNITS = [{
         modelName: "star",
         meshName: "Sphere.004",
@@ -165,7 +172,7 @@
       },
 
       {
-        modelName: "runwayanim",
+        modelName: "runway",
         position: {
           x: 50,
           y: -5,
@@ -213,100 +220,25 @@
 
         var m = MODELS[i];
 
-        loadGltfModel(m, function() {
-
-          ++numLoadedModels;
-
-          if (numLoadedModels === MODELS.length) {
-
-            console.log("All models loaded, time to instantiate units...");
-            instantiateUnits();
-
-          }
-
-        });
+        loadGltfModel(m);
 
       }
 
     }
 
-    function instantiateUnits() {
-
-    				var numSuccess = 0;
-
-    				for ( var i = 0; i < UNITS.length; ++ i ) {
-
-    					var u = UNITS[ i ];
-    					var model = getModelByName( u.modelName );
-
-    					if ( model ) {
-
-    						var clonedScene = SkeletonUtils.clone( model.scene );
-
-    						if ( clonedScene ) {
-
-    							// THREE.Scene is cloned properly, let's find one mesh and launch animation for it
-    							var clonedMesh = clonedScene.getObjectByName();
-
-    							if ( clonedMesh ) {
-
-    								var mixer = startAnimation( clonedMesh, model.animations );
-
-    								// Save the animation mixer in the list, will need it in the animation loop
-    								mixers.push( mixer );
-    								numSuccess ++;
-
-    							}
-
-    							// Different models can have different configurations of armatures and meshes. Therefore,
-    							// We can't set position, scale or rotation to individual mesh objects. Instead we set
-    							// it to the whole cloned scene and then add the whole scene to the game world
-    							// Note: this may have weird effects if you have lights or other items in the GLTF file's scene!
-    							worldScene.add( clonedScene );
-
-    							if ( u.position ) {
-
-    								clonedScene.position.set( u.position.x, u.position.y, u.position.z );
-
-    							}
-
-    							if ( u.scale ) {
-
-    								clonedScene.scale.set( u.scale, u.scale, u.scale );
-
-    							}
-
-    							if ( u.rotation ) {
-
-    								clonedScene.rotation.x = u.rotation.x;
-    								clonedScene.rotation.y = u.rotation.y;
-    								clonedScene.rotation.z = u.rotation.z;
-
-    							}
-
-    					        }
-
-    					} else {
-
-    						console.error( "Can not find model", u.modelName );
-
-    					}
-
-    				}
-
-    				console.log( `Successfully instantiated ${numSuccess} units` );
+    function startMixers() {
+      console.log(loadedModels);
+    }
 
 
-    			}
 
+    function startAnimation( skinnedMesh, animations, animationName ) {
 
-          function startAnimation( skinnedMesh, animations, animationName ) {
+        var mixer = new THREE.AnimationMixer( model );
 
-            var mixer = new THREE.AnimationMixer( model );
+        mixer.clipAction( gltf.animations[ 0 ] ).play();
 
-            mixer.clipAction( gltf.animations[ 0 ] ).play();
-
-  			}
+		}
 
 
 
@@ -326,37 +258,58 @@
 
     }
 
+
+
     function loadGltfModel(model, onLoaded) {
 
       var loader = new GLTFLoader();
-      var modelName = "/models/" + model.name + ".gltf";
+      var modelName = "./models/" + model.name + ".gltf";
 
       loader.load(modelName, function(gltf) {
 
-        var scene = gltf.scene;
+        console.log("Done loading gltf model");
 
-        model.animations = gltf.animations;
-        model.scene = scene;
+        ++numLoadedModels;
 
-        console.log("Done loading model", model.name);
+        var model = gltf.scene;
+        model.position.set(0, -5, 0 );
+        model.rotation.y = 3.14159;
+        worldScene.add( model );
 
-        onLoaded();
+        worldScene.traverse(function(model) {
+
+            model.frustumCulled = false;
+
+          });
+
+        var mixer = new THREE.AnimationMixer( model );
+
+        if(gltf.animations.length) {
+          mixer.clipAction( gltf.animations[ 0 ] ).play();
+          mixers.push(mixer);
+        }
+
+        if (numLoadedModels === MODELS.length) {
+          console.log("All models loaded, time to start animating...");
+          animate();
+        }
 
       });
 
     }
+
     function animate() {
 
       requestAnimationFrame(animate);
       var mixerUpdateDelta = clock.getDelta();
+
+      // update all animation mixers
       for (var i = 0; i < mixers.length; ++i) {
-
         mixers[i].update(mixerUpdateDelta);
-
       }
 
       renderer.render(worldScene, camera);
-    controls.update();
+      controls.update();
     }
 
     function init() {
@@ -370,7 +323,7 @@
       clock = new THREE.Clock();
       //scene
       worldScene = new THREE.Scene();
-      //scene.fog = new THREE.Fog(0x162438, 30, 300);
+      worldScene.fog = new THREE.Fog(0x162438, 30, 300);
 
 
       //renderer

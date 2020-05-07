@@ -18,6 +18,7 @@
   "homepage": "https://github.com/worldwidewev/1page#readme",
   "devDependencies": {
     "3dink": "^2.1.0",
+    "requirejs": "^2.3.6",
     "three": "^0.116.1"
   }
 }
