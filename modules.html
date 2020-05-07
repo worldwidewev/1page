@@ -297,6 +297,16 @@
 
           });
 
+          gltf.scene.traverse( function ( child ) {
+
+    if ( child.isMesh ) {
+
+        child.material.alphaTest = 0.5;
+
+     }
+
+}  );
+
 
         var mixer = new THREE.AnimationMixer( model );
 
@@ -311,7 +321,7 @@
             // add a link to each of the meshes that create the sum "star" gltf model
             DDDINK.addURL(child, "https://itunes.apple.com/us/artist/wev/1356660469");
             DDDINK.domEvent.setGlobalLinkConfig('_self', 'ON', 'ON', 0xffffff);
-            //child.userData.linkConfig.setShineOnMouse('ON')
+            child.userData.linkConfig.setShineOnMouse('ON')
             child.userData.linkConfig.setNewTab('ON');
             DDDINK.readRendererObj(renderer, worldScene, camera);
             DDDINK.domEvent.addFnc('Fn', 'A');
