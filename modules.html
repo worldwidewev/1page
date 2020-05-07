@@ -106,27 +106,14 @@
     </div>
   </div>
   <div id="container"></div>
+  <script src="js/three.js"></script>
+	<script src="js/3Dink.js"></script>
+	<script src="js/DeviceOrientationControls.js"></script>
+	<script src="js/OrbitControls.js"></script>
+	<script src="js/GLTFLoader.js"></script>
+	<script src="js/stats.min.js"></script>
+  <script>
 
-  <script type="module">
-    import * as THREE from 'https://github.com/worldwidewev/1page/blob/gh-pages/node_modules/three/build/three.module.js';
-
-    import {
-      DeviceOrientationControls
-    } from 'https://github.com/worldwidewev/1page/blob/gh-pages/node_modules/three/examples/jsm/controls/DeviceOrientationControls.js';
-    import {
-      OrbitControls
-    } from 'https://github.com/worldwidewev/1page/blob/gh-pages/node_modules/three/examples/jsm/controls/OrbitControls.js';
-    import {
-      GLTFLoader
-    } from 'https://github.com/worldwidewev/1page/blob/gh-pages/node_modules/three/examples/jsm/loaders/GLTFLoader.js';
-
-
-
-
-    import {
-      CSS3DRenderer,
-      CSS3DObject
-    } from 'https://github.com/worldwidewev/1page/blob/gh-pages/node_modules/three/examples/jsm/renderers/CSS3DRenderer.js';
 
     var controls;
     var container;
@@ -264,7 +251,7 @@
 
     function loadGltfModel(model, onLoaded) {
 
-      var loader = new GLTFLoader();
+      var loader = new THREE.GLTFLoader();
       var modelName = "/models/" + model.name + ".gltf";
 
       loader.load(modelName, function(gltf) {
@@ -373,9 +360,9 @@
       };
 
       if (window.mobilecheck() == true) {
-        controls = new DeviceOrientationControls(camera, THREE.WebGLRenderer);
+        controls = new THREE.DeviceOrientationControls(camera, THREE.WebGLRenderer);
       } else {
-        controls = new OrbitControls(camera, renderer.domElement);
+        controls = new THREE.OrbitControls(camera, renderer.domElement);
         //controls.minPolarAngle = Math.PI / 2 - 0.2;
         //controls.enablePan = false;
         //controls.enableZoom = false;
