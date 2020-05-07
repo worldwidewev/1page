@@ -108,24 +108,27 @@
   <div id="container"></div>
 
   <script type="module">
-    import * as THREE from '/1page/node_modules/three/build/three.module.js';
+    import * as THREE from '/node_modules/three/build/three.module.js';
 
     import {
       DeviceOrientationControls
-    } from '/1page/node_modules/three/examples/jsm/controls/DeviceOrientationControls.js';
+    } from '/node_modules/three/examples/jsm/controls/DeviceOrientationControls.js';
     import {
       OrbitControls
-    } from '/1page/node_modules/three/examples/jsm/controls/OrbitControls.js';
+    } from '/node_modules/three/examples/jsm/controls/OrbitControls.js';
     import {
       GLTFLoader
-    } from '/1page/node_modules/three/examples/jsm/loaders/GLTFLoader.js';
+    } from '/node_modules/three/examples/jsm/loaders/GLTFLoader.js';
 
-    import { SkeletonUtils } from '/1page/node_modules/three/examples/jsm/utils/SkeletonUtils.js';
-    import Stats from '/1page/node_modules/three/examples/jsm/libs/stats.module.js';
+    import { SkeletonUtils } from '/node_modules/three/examples/jsm/utils/SkeletonUtils.js';
+    import Stats from '/node_modules/three/examples/jsm/libs/stats.module.js';
+    import {
+      TrackballControls
+    } from '/node_modules/three/examples/jsm/controls/TrackballControls.js';
     import {
       CSS3DRenderer,
       CSS3DObject
-    } from '/1page/node_modules/three/examples/jsm/renderers/CSS3DRenderer.js';
+    } from '/node_modules/three/examples/jsm/renderers/CSS3DRenderer.js';
 
     var controls;
     var container;
@@ -264,7 +267,7 @@
     function loadGltfModel(model, onLoaded) {
 
       var loader = new GLTFLoader();
-      var modelName = "/1page/models/" + model.name + ".gltf";
+      var modelName = "/models/" + model.name + ".gltf";
 
       loader.load(modelName, function(gltf) {
 
