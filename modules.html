@@ -119,6 +119,7 @@
     var container;
     var raycaster;
     var mouse;
+    var star;
 
 
     var worldScene = null;
@@ -192,6 +193,11 @@
     ];
 
     var numLoadedModels = 0;
+
+    DDDINK.addURL(star, "https://itunes.apple.com/us/artist/wev/1356660469");
+    DDDINK.domEvent.setGlobalLinkConfig('_self', 'ON', 'ON', 0xffffff);
+    DDDINK.readRendererObj(renderer, scene, camera);
+    DDDINK.domEvent.addFnc('Fn', 'A');
 
 
     var startButton = document.getElementById('startButton');
