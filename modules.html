@@ -515,8 +515,8 @@
       div.appendChild( iframe );
 
       var cssObject = new THREE.CSS3DObject( div );
-      cssObject.scale.multiplyScalar(1/1000)
-      cssObject.position.set( 0, 0, 0 );
+      cssObject.scale.multiplyScalar(1/1000); // for some reason default is really big
+      cssObject.position.set( 0, 0, 0 ); // TODO: move this and rotate to get it inside the TV
 
       window.cssObject  = cssObject
       cssScene.add(cssObject);
