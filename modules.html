@@ -167,16 +167,12 @@
     var MODELS = [{
         name: "star"
       },
-
       {
         name: "cd"
       },
-
       {
         name: "tv"
       },
-
-
       {
         name: "starbase"
       },
@@ -184,12 +180,9 @@
       {
         name: "runway"
       },
-
       {
         name: "runway2"
       },
-
-
       {
         name: "model1a"
       },
@@ -201,8 +194,6 @@
       {
         name: "model3a"
       },
-
-
       {
         name: "islands"
       },
@@ -379,7 +370,7 @@
         }
 
         if (numLoadedModels === 1) {
-          // this is the star (index 1 in UNITS)
+          // this is the star (index 1 in MODELS)
           // add links to all the meshes that make it up
           model.children.forEach(function(child) {
             DDDINK.addURL(child, "https://itunes.apple.com/us/artist/wev/1356660469");
@@ -392,7 +383,7 @@
         }
 
         if (numLoadedModels === 3) {
-          // this is the tv (index 3 in UNITS)
+          // this is the tv (index 3 in MODELS)
           // add links to all the meshes that make it up
           model.children.forEach(function(child) {
             console.log('lol');
