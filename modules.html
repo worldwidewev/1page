@@ -494,12 +494,6 @@
 
 
 
-
-
-
-
-
-
       var div = document.createElement( 'div' );
       div.style.width = '480px';
       div.style.height = '360px';
@@ -524,9 +518,6 @@
       cssRenderer = new THREE.CSS3DRenderer();
       cssRenderer.setSize( window.innerWidth, window.innerHeight );
       document.body.appendChild( cssRenderer.domElement );
-
-
-
 
 
 
@@ -576,6 +567,7 @@
       camera.aspect = window.innerWidth / window.innerHeight;
       camera.updateProjectionMatrix();
       renderer.setSize(window.innerWidth, window.innerHeight);
+      cssRenderer.setSize(window.innerWidth, window.innerHeight);
     }
   </script>
 
