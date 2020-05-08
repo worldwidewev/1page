@@ -158,6 +158,10 @@
     var worldScene = null;
     var renderer = null;
     var camera = null;
+
+    var cssScene = new THREE.Scene();
+    var cssRenderer = null;
+
     var clock = null;
     var mixers = [];
     var loadedModels = [];
@@ -176,7 +180,6 @@
       {
         name: "starbase"
       },
-
       {
         name: "runway"
       },
@@ -253,14 +256,9 @@
 
 
     function loadModels() {
-
-
       for (var i = 0; i < MODELS.length; ++i) {
-
         var m = MODELS[i];
-
         loadGltfModel(m);
-
       }
 
     }
@@ -369,6 +367,7 @@
           mixers.push(mixer);
         }
 
+
         if (numLoadedModels === 1) {
           // this is the star (index 1 in MODELS)
           // add links to all the meshes that make it up
@@ -377,25 +376,11 @@
             DDDINK.domEvent.setGlobalLinkConfig('_self', 'ON', 'ON', 0xffffff);
             child.userData.linkConfig.setShineOnMouse('ON')
             child.userData.linkConfig.setNewTab('ON');
-            DDDINK.readRendererObj(renderer, worldScene, camera);
+            // need to use cssRenderer here now since it's the one getting hover/click events now
+            DDDINK.readRendererObj(cssRenderer, worldScene, camera);
             DDDINK.domEvent.addFnc('Fn', 'A');
           });
         }
-
-        if (numLoadedModels === 3) {
-          // this is the tv (index 3 in MODELS)
-          // add links to all the meshes that make it up
-          model.children.forEach(function(child) {
-            console.log('lol');
-            DDDINK.addURL(child, "http://www.google.com");
-            DDDINK.domEvent.setGlobalLinkConfig('_self', 'ON', 'ON', 0xffffff);
-            // child.userData.linkConfig.setShineOnMouse('ON') //
-            child.userData.linkConfig.setNewTab('ON');
-            DDDINK.readRendererObj(renderer, worldScene, camera);
-            DDDINK.domEvent.addFnc('Fn', 'A');
-          });
-        }
-
 //loading animation
         var loader = document.getElementById('loader');
         if (numLoadedModels === MODELS.length) {
@@ -420,6 +405,7 @@
       }
 
       renderer.render(worldScene, camera);
+      cssRenderer.render(cssScene, camera);
       controls.update();
     }
 
@@ -503,6 +489,47 @@
       var skybox = new THREE.Mesh(skyboxGeo, materialArray);
       worldScene.add(skybox);
 
+
+
+
+
+
+
+
+
+
+
+
+      var div = document.createElement( 'div' );
+      div.style.width = '480px';
+      div.style.height = '360px';
+      div.style.backgroundColor = '#FFF';
+      div.style.position = 'absolute';
+      div.style.zIndex = -10000;
+
+      var iframe = document.createElement( 'iframe' );
+      iframe.style.width = '480px';
+      iframe.style.height = '360px';
+      iframe.style.border = '0px';
+      iframe.src = 'https://www.youtube.com/embed/YvMrfwdgrEQ';
+      div.appendChild( iframe );
+
+      var cssObject = new THREE.CSS3DObject( div );
+      cssObject.scale.multiplyScalar(1/1000)
+      cssObject.position.set( 0, 0, 0 );
+
+      window.cssObject  = cssObject
+      cssScene.add(cssObject);
+
+      cssRenderer = new THREE.CSS3DRenderer();
+      cssRenderer.setSize( window.innerWidth, window.innerHeight );
+      document.body.appendChild( cssRenderer.domElement );
+
+
+
+
+
+
       //mobile check
       window.mobilecheck = function() {
         var check = false;
@@ -518,8 +545,10 @@
 
       if (window.mobilecheck() == true) {
         controls = new THREE.DeviceOrientationControls(camera, THREE.WebGLRenderer);
+        controls = new THREE.DeviceOrientationControls(camera, THREE.CSS3DRenderer);
       } else {
         controls = new THREE.OrbitControls(camera, renderer.domElement);
+        controls = new THREE.OrbitControls(camera, cssRenderer.domElement);
         //controls.minPolarAngle = Math.PI / 2 - 0.2;
         //controls.enablePan = false;
         //controls.enableZoom = false;
