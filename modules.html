@@ -219,7 +219,6 @@
 
         scale: 1,
       },
-
       {
         modelName: "runway",
         position: {
@@ -380,12 +379,26 @@
         }
 
         if (numLoadedModels === 1) {
-          // this is the star and the base i think
+          // this is the star (index 1 in UNITS)
+          // add links to all the meshes that make it up
           model.children.forEach(function(child) {
-            // add a link to each of the meshes that create the sum "star" gltf model
             DDDINK.addURL(child, "https://itunes.apple.com/us/artist/wev/1356660469");
             DDDINK.domEvent.setGlobalLinkConfig('_self', 'ON', 'ON', 0xffffff);
             child.userData.linkConfig.setShineOnMouse('ON')
+            child.userData.linkConfig.setNewTab('ON');
+            DDDINK.readRendererObj(renderer, worldScene, camera);
+            DDDINK.domEvent.addFnc('Fn', 'A');
+          });
+        }
+
+        if (numLoadedModels === 3) {
+          // this is the tv (index 3 in UNITS)
+          // add links to all the meshes that make it up
+          model.children.forEach(function(child) {
+            console.log('lol');
+            DDDINK.addURL(child, "http://www.google.com");
+            DDDINK.domEvent.setGlobalLinkConfig('_self', 'ON', 'ON', 0xffffff);
+            // child.userData.linkConfig.setShineOnMouse('ON') //
             child.userData.linkConfig.setNewTab('ON');
             DDDINK.readRendererObj(renderer, worldScene, camera);
             DDDINK.domEvent.addFnc('Fn', 'A');
@@ -548,4 +561,4 @@
 
 </body>
 
-</html> 
+</html>
