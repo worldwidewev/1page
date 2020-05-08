@@ -317,12 +317,37 @@
 
     function loadGltfModel(model, onLoaded) {
 
+      var manager = new THREE.LoadingManager();
+manager.onStart = function ( url, itemsLoaded, itemsTotal ) {
+
+	console.log( 'Started loading file: ' + url + '.\nLoaded ' + itemsLoaded + ' of ' + itemsTotal + ' files.' );
+
+};
+
+manager.onLoad = function ( ) {
+
+	console.log( 'Loading complete!');
+
+};
+
+
+manager.onProgress = function ( url, itemsLoaded, itemsTotal ) {
+
+	console.log( 'Loading file: ' + url + '.\nLoaded ' + itemsLoaded + ' of ' + itemsTotal + ' files.' );
+
+};
+
+manager.onError = function ( url ) {
+
+	console.log( 'There was an error loading ' + url );
+
+};
 
       raycaster = new THREE.Raycaster();
 
       mouse = new THREE.Vector2();
 
-      var loader = new THREE.GLTFLoader();
+      var loader = new THREE.GLTFLoader( manager );
       var modelName = "models/" + model.name + ".gltf";
 
       loader.load(modelName, function(gltf) {
@@ -373,9 +398,23 @@
           });
         }
 
+        if (numLoadedModels === 2) {
+          // this is the star and the base i think
+          model.children.forEach(function(child) {
+            // add a link to each of the meshes that create the sum "star" gltf model
+            DDDINK.addURL(child, "https://codepen.io/dcode-software/pen/NEErgO");
+            DDDINK.domEvent.setGlobalLinkConfig('_self', 'ON', 'ON', 0xffffff);
+            child.userData.linkConfig.setShineOnMouse('ON')
+            child.userData.linkConfig.setNewTab('ON');
+            DDDINK.readRendererObj(renderer, worldScene, camera);
+            DDDINK.domEvent.addFnc('Fn', 'A');
+          });
+        }
+
         var loader = document.getElementById('loader');
         if (numLoadedModels === MODELS.length) {
           loader.className += " hidden";
+            mixer.setTime(0);
           console.log("All models loaded, time to start animating...");
 
 
