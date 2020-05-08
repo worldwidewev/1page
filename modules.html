@@ -42,7 +42,7 @@
 
     #overlay {
       position: absolute;
-      z-index: 1;
+      z-index: 99;
       top: 0;
       left: 0;
       width: 100%;
@@ -74,40 +74,36 @@
       font-size: 12px;
     }
 
-    .loader {
-    position: fixed;
-    z-index: 99;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: black;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
+    #loader {
+      position: absolute;
+      z-index: 1;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: black;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
 
-.loader > img {
-    width: 100px;
-}
+    #loader>img {
+      width: 150px;
+    }
 
-.loader.hidden {
-    animation: fadeOut 1s;
-    animation-fill-mode: forwards;
-}
+    #loader.hidden {
+      animation: fadeOut 2s;
+      animation-fill-mode: forwards;
+    }
 
-@keyframes fadeOut {
-    100% {
+    @keyframes fadeOut {
+      100% {
         opacity: 0;
         visibility: hidden;
+      }
     }
-}
 
-.thumb {
-    height: 100px;
-    border: 1px solid black;
-    margin: 10px;
-}
+
 
     #info {
       color: #fff;
@@ -139,27 +135,27 @@
     <div>
       <button id="startButton">ENTER</button>
     </div>
-
-    <div class="loader">
+  </div>
+    <div id="loader">
     <img src="loading.gif" alt="Loading..." />
 </div>
-
-  </div>
+    </div>
   <div id="container"></div>
   <script src="js/three.js"></script>
-	<script src="js/3Dink.js"></script>
-	<script src="js/DeviceOrientationControls.js"></script>
-	<script src="js/OrbitControls.js"></script>
-	<script src="js/GLTFLoader.js"></script>
-	<script src="js/stats.min.js"></script>
+  <script src="js/3Dink.js"></script>
+  <script src="js/DeviceOrientationControls.js"></script>
+  <script src="js/OrbitControls.js"></script>
+  <script src="js/GLTFLoader.js"></script>
+  <script src="js/stats.min.js"></script>
+  <script src="js/CSS3DRenderer.js"></script>
+  <script src="js/threex.htmlmixer.js"></script>
+
   <script>
-
-
     var controls;
     var container;
     var raycaster;
     var mouse;
-    var star;
+
 
 
     var worldScene = null;
@@ -181,6 +177,7 @@
         name: "tv"
       },
 
+
       {
         name: "starbase"
       },
@@ -195,16 +192,17 @@
 
 
       {
-        name: "model1"
+        name: "model1a"
       },
 
       {
-        name: "model2"
+        name: "model2a"
       },
 
       {
-        name: "model3"
+        name: "model3a"
       },
+
 
       {
         name: "islands"
@@ -257,8 +255,6 @@
     var numLoadedModels = 0;
 
 
-
-
     var startButton = document.getElementById('startButton');
     startButton.addEventListener('click', function() {
 
@@ -266,14 +262,14 @@
       loadModels();
       animate();
 
-      window.addEventListener("load", function () {
-const loader = document.querySelector(".loader");
-loader.className += " hidden"; // class "loader hidden"
-});
 
     }, false);
 
+
+
     function loadModels() {
+
+      var pageLoad = document.getElementById('loader');
 
       for (var i = 0; i < MODELS.length; ++i) {
 
@@ -291,13 +287,13 @@ loader.className += " hidden"; // class "loader hidden"
 
 
 
-    function startAnimation( skinnedMesh, animations, animationName ) {
+    function startAnimation(skinnedMesh, animations, animationName) {
 
-        var mixer = new THREE.AnimationMixer( model );
+      var mixer = new THREE.AnimationMixer(model);
 
-        mixer.clipAction( gltf.animations[ 0 ] ).play();
+      mixer.clipAction(gltf.animations[0]).play();
 
-		}
+    }
 
 
 
@@ -336,35 +332,35 @@ loader.className += " hidden"; // class "loader hidden"
         ++numLoadedModels;
 
         var model = gltf.scene;
-        model.position.set(0, -5, 0 );
+        model.position.set(0, -5, 0);
         model.rotation.y = 3.14159;
-        worldScene.add( model );
+        worldScene.add(model);
 
         worldScene.traverse(function(model) {
 
-            model.frustumCulled = false;
+          model.frustumCulled = false;
 
-          });
+        });
 
-          gltf.scene.traverse( function ( child ) {
+        gltf.scene.traverse(function(child) {
 
-    if ( child.isMesh ) {
+          if (child.isMesh) {
 
-        child.material.alphaTest = 0.5;
+            child.material.alphaTest = 0.5;
 
-     }
+          }
 
-}  );
+        });
 
 
-        var mixer = new THREE.AnimationMixer( model );
+        var mixer = new THREE.AnimationMixer(model);
 
-        if(gltf.animations.length) {
-          mixer.clipAction( gltf.animations[ 0 ] ).play();
+        if (gltf.animations.length) {
+          mixer.clipAction(gltf.animations[0]).play();
           mixers.push(mixer);
         }
 
-        if(numLoadedModels === 1) {
+        if (numLoadedModels === 1) {
           // this is the star and the base i think
           model.children.forEach(function(child) {
             // add a link to each of the meshes that create the sum "star" gltf model
@@ -376,9 +372,10 @@ loader.className += " hidden"; // class "loader hidden"
             DDDINK.domEvent.addFnc('Fn', 'A');
           });
         }
+
+        var loader = document.getElementById('loader');
         if (numLoadedModels === MODELS.length) {
-
-
+          loader.className += " hidden";
           console.log("All models loaded, time to start animating...");
 
 
@@ -406,9 +403,16 @@ loader.className += " hidden"; // class "loader hidden"
     }
 
     function init() {
+
+
+
       //remove overlay
       var overlay = document.getElementById('overlay');
       overlay.remove();
+      window.addEventListener("load", function () {
+
+      });
+
       //container
       var container = document.getElementById('container');
 
@@ -428,6 +432,11 @@ loader.className += " hidden"; // class "loader hidden"
       //camera
       camera = new THREE.PerspectiveCamera(40, window.innerWidth / window.innerHeight, 0.1, 15000);
       camera.position.z = 1;
+
+
+
+
+
       //lights
       var light = new THREE.AmbientLight(0xffffff, 1);
       worldScene.add(light);
@@ -524,11 +533,6 @@ loader.className += " hidden"; // class "loader hidden"
       camera.updateProjectionMatrix();
       renderer.setSize(window.innerWidth, window.innerHeight);
     }
-
-
-
-
-
   </script>
 
 </body>
