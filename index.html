@@ -505,7 +505,7 @@
       iframe.style.width = '480px';
       iframe.style.height = '360px';
       iframe.style.border = '0px';
-      iframe.src = 'https://www.youtube.com/embed/Kmql7206JjI';
+      iframe.src = 'https://www.youtube.com/embed/Kmql7206JjI?enablejsapi=1&origin=http://wev.world';
       div.appendChild( iframe );
 
       var cssObject = new THREE.CSS3DObject( div );
@@ -541,9 +541,9 @@
       } else {
         controls = new THREE.OrbitControls(camera, renderer.domElement);
         controls = new THREE.OrbitControls(camera, cssRenderer.domElement);
-        //controls.minPolarAngle = Math.PI / 2 - 0.2;
-        //controls.enablePan = false;
-        //controls.enableZoom = false;
+        controls.minPolarAngle = Math.PI / 2 - 0.2;
+        controls.enablePan = false;
+        controls.enableZoom = false;
       }
 
       //for 3dink i think
