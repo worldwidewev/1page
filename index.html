@@ -581,6 +581,7 @@
       iframe.style.width = '480px';
       iframe.style.height = '360px';
       iframe.style.border = '0px';
+      iframe.style.position = 'absolute';
       iframe.src = 'https://www.youtube.com/embed/Kmql7206JjI?playsinline=1';
       div.appendChild( iframe );
 
@@ -591,6 +592,7 @@
 
       window.cssObject  = cssObject
       cssScene.add(cssObject);
+
 
       cssRenderer = new THREE.CSS3DRenderer();
       cssRenderer.setSize( window.innerWidth, window.innerHeight );
