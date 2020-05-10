@@ -234,16 +234,14 @@
     var worldScene = null;
     var renderer = null;
     var camera = null;
-
     var cssScene = new THREE.Scene();
     var cssRenderer = null;
-
     var clock = null;
     var mixers = [];
-    var loadedModels = [];
+    var hittableMeshes = [];
+    var numLoadedModels = 0;
 
-
-//3D models
+    //3D models
     var MODELS = [{
         name: "star"
       },
@@ -277,7 +275,9 @@
         name: "islands"
       },
     ];
-//idk if we need this?
+
+    // WARNING: UNITS is no longer used
+    // Only left this dead code here for reference
     var UNITS = [{
         modelName: "star",
         meshName: "Sphere.004",
@@ -317,18 +317,16 @@
         },
         scale: 1,
       },
-
     ];
 
-    var numLoadedModels = 0;
-
-//overlay div for device orientation API
+    //overlay div for device orientation API
     var startButton = document.getElementById('startButton');
+    //when button is hit, we load and initalize the experience
     startButton.addEventListener('click', function() {
-
       init();
       loadModels();
     }, false);
+
 
 
     function loadModels() {
@@ -336,80 +334,47 @@
         var m = MODELS[i];
         loadGltfModel(m);
       }
-
     }
-
-    function startMixers() {
-      console.log(loadedModels);
-    }
-
-
 
     function startAnimation(skinnedMesh, animations, animationName) {
-
       var mixer = new THREE.AnimationMixer(model);
-
       mixer.clipAction(gltf.animations[0]).play();
-
     }
 
-
-
     function getModelByName(name) {
-
       for (var i = 0; i < MODELS.length; ++i) {
-
         if (MODELS[i].name === name) {
-
           return MODELS[i];
-
         }
-
       }
 
       return null;
-
     }
 
-
-
     function loadGltfModel(model, onLoaded) {
-//loadmanager which might be helpful??
+      //loadmanager which might be helpful??
       var manager = new THREE.LoadingManager();
+
       manager.onStart = function(url, itemsLoaded, itemsTotal) {
-
         console.log('Started loading file: ' + url + '.\nLoaded ' + itemsLoaded + ' of ' + itemsTotal + ' files.');
-
       };
 
       manager.onLoad = function() {
-
         console.log('Loading complete!');
-
       };
 
-
       manager.onProgress = function(url, itemsLoaded, itemsTotal) {
-
         console.log('Loading file: ' + url + '.\nLoaded ' + itemsLoaded + ' of ' + itemsTotal + ' files.');
-
       };
 
       manager.onError = function(url) {
-
         console.log('There was an error loading ' + url);
-
       };
-
-      raycaster = new THREE.Raycaster();
-
-      mouse = new THREE.Vector2();
 
       var loader = new THREE.GLTFLoader(manager);
       var modelName = "models/" + model.name + ".gltf";
 
       loader.load(modelName, function(gltf) {
-
         console.log("Done loading gltf model");
 
         ++numLoadedModels;
@@ -420,24 +385,18 @@
         worldScene.add(model);
 
         worldScene.traverse(function(model) {
-
           model.frustumCulled = false;
-
         });
 
         gltf.scene.traverse(function(child) {
-
           if (child.isMesh) {
-
             child.material.alphaTest = 0.5;
-
           }
-
         });
 
 
+        // Begin animations for gltf if any exist
         var mixer = new THREE.AnimationMixer(model);
-
         if (gltf.animations.length) {
           mixer.clipAction(gltf.animations[0]).play();
           mixers.push(mixer);
@@ -445,19 +404,20 @@
 
 
         if (numLoadedModels === 1) {
-          // this is the star (index 1 in MODELS)
-          // add links to all the meshes that make it up
-          model.children.forEach(function(child) {
-            DDDINK.addURL(child, "https://itunes.apple.com/us/artist/wev/1356660469");
-            DDDINK.domEvent.setGlobalLinkConfig('_self', 'ON', 'ON', 0xffffff);
-            child.userData.linkConfig.setShineOnMouse('ON')
-            child.userData.linkConfig.setNewTab('ON');
-            // need to use cssRenderer here now since it's the one getting hover/click events now
-            DDDINK.readRendererObj(cssRenderer, worldScene, camera);
-            DDDINK.domEvent.addFnc('Fn', 'A');
-          });
+            model.children.forEach(function(child) {
+              if(child instanceof THREE.Group) {
+                child.children.forEach(function(grandchild) {
+                  grandchild.userData = { URL: "https://itunes.apple.com/us/artist/wev/1356660469"};
+                  hittableMeshes.push(grandchild);
+                });
+              } else {
+                child.userData = { URL: "https://itunes.apple.com/us/artist/wev/1356660469"};
+                hittableMeshes.push(child);
+              }
+            });
         }
-//loading animation
+
+        //loading animation
         var loader = document.getElementById('loader');
         if (numLoadedModels === MODELS.length) {
           loader.className += " hidden";
@@ -589,7 +549,7 @@
 
       var cssObject = new THREE.CSS3DObject( div );
       cssObject.scale.multiplyScalar(1/50); // for some reason default is really big
-      cssObject.position.set( 0, 3.5, 33 ); // TODO: move this and rotate to get it inside the TV
+      cssObject.position.set( 0, 3.5, 33 ); // this is set to be "inside" the TV model
 			cssObject.rotation.y = 3.14159;
 
       window.cssObject  = cssObject
@@ -626,7 +586,7 @@
         controls.enableZoom = false;
       }
 
-      //for 3dink i think
+      // For click+hit detection
       raycaster = new THREE.Raycaster();
       mouse = new THREE.Vector2();
 
@@ -634,6 +594,7 @@
       //three stuff
       window.addEventListener('resize', onWindowResize, false);
       document.addEventListener('mousemove', onDocumentMouseMove, false);
+      document.addEventListener('mousedown', onDocumentMouseDown, false);
     }
 
 
@@ -642,6 +603,16 @@
       event.preventDefault();
       mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
       mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
+    }
+
+    function onDocumentMouseDown(event) {
+      event.preventDefault();
+      raycaster.setFromCamera( mouse, camera );
+
+      var intersects = raycaster.intersectObjects( hittableMeshes, true );
+      if (intersects.length) {
+        window.open(intersects[0].object.userData.URL);
+      }
     }
 
     function onWindowResize() {
