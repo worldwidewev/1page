@@ -240,6 +240,20 @@
     var mixers = [];
     var hittableMeshes = [];
     var numLoadedModels = 0;
+    var totalNumOfModels = 10;
+
+    var loader = document.getElementById('loader');
+
+    var starModelName = 'star';
+    var cdModelName = 'cd';
+    var tvModelName = 'tv';
+    var starbaseModelName = 'starbase'
+    var runway1ModelName = 'runway';
+    var runway2ModelName = 'runway2';
+    var idk1ModelName = 'model1a';
+    var idk2ModelName = 'model2a';
+    var idk3ModelName = 'model3a';
+    var islandsModelName = 'islands';
 
     //3D models
     var MODELS = [{
@@ -330,152 +344,63 @@
 
 
     function loadModels() {
-      for (var i = 0; i < MODELS.length; ++i) {
-        var m = MODELS[i];
-        loadGltfModel(m);
-      }
-    }
+      //loadGltfModel('models/star.gltf', onStarLoadSuccess);
 
-    function startAnimation(skinnedMesh, animations, animationName) {
-      var mixer = new THREE.AnimationMixer(model);
-      mixer.clipAction(gltf.animations[0]).play();
-    }
-
-    function getModelByName(name) {
-      for (var i = 0; i < MODELS.length; ++i) {
-        if (MODELS[i].name === name) {
-          return MODELS[i];
-        }
-      }
-
-      return null;
-    }
-
-    function loadGltfModel(model, onLoaded) {
-      //loadmanager which might be helpful??
       var manager = new THREE.LoadingManager();
-
       manager.onStart = function(url, itemsLoaded, itemsTotal) {
-        console.log('Started loading file: ' + url + '.\nLoaded ' + itemsLoaded + ' of ' + itemsTotal + ' files.');
+        console.log('Started loading file: '
+          + url + '.\nLoaded ' + itemsLoaded + ' of ' + itemsTotal + ' files.'
+        );
       };
-
       manager.onLoad = function() {
         console.log('Loading complete!');
       };
-
-      manager.onProgress = function(url, itemsLoaded, itemsTotal) {
-        console.log('Loading file: ' + url + '.\nLoaded ' + itemsLoaded + ' of ' + itemsTotal + ' files.');
-      };
-
       manager.onError = function(url) {
         console.log('There was an error loading ' + url);
       };
 
-      var loader = new THREE.GLTFLoader(manager);
-      var modelName = "models/" + model.name + ".gltf";
+      var gltfLoaderInstance = new THREE.GLTFLoader(manager);
 
-      loader.load(modelName, function(gltf) {
-        console.log("Done loading gltf model");
-
-        ++numLoadedModels;
-
-        var model = gltf.scene;
-        model.position.set(0, -5, 0);
-        model.rotation.y = 3.14159;
-        worldScene.add(model);
-
-        worldScene.traverse(function(model) {
-          model.frustumCulled = false;
-        });
-
-        gltf.scene.traverse(function(child) {
-          if (child.isMesh) {
-            child.material.alphaTest = 0.5;
-          }
-        });
-
-
-        // Begin animations for gltf if any exist
-        var mixer = new THREE.AnimationMixer(model);
-        if (gltf.animations.length) {
-          mixer.clipAction(gltf.animations[0]).play();
-          mixers.push(mixer);
-        }
-
-
-        if (numLoadedModels === 1) {
-            model.children.forEach(function(child) {
-              if(child instanceof THREE.Group) {
-                child.children.forEach(function(grandchild) {
-                  grandchild.userData = { URL: "https://itunes.apple.com/us/artist/wev/1356660469"};
-                  hittableMeshes.push(grandchild);
-                });
-              } else {
-                child.userData = { URL: "https://itunes.apple.com/us/artist/wev/1356660469"};
-                hittableMeshes.push(child);
-              }
-            });
-        }
-
-        //loading animation
-        var loader = document.getElementById('loader');
-        if (numLoadedModels === MODELS.length) {
-          loader.className += " hidden";
-          mixer.setTime(0);
-          console.log("All models loaded, time to start animating...");
-          animate();
-        }
-
-      });
-
-    }
-
-    function animate() {
-
-      requestAnimationFrame(animate);
-      var mixerUpdateDelta = clock.getDelta();
-
-
-      for (var i = 0; i < mixers.length; ++i) {
-        mixers[i].update(mixerUpdateDelta);
-      }
-
-      renderer.render(worldScene, camera);
-      cssRenderer.render(cssScene, camera);
-      controls.update();
+      gltfLoaderInstance.load('models/star.gltf', onStarLoadSuccess);
+      gltfLoaderInstance.load('models/cd.gltf', onDefaultGLTFLoadSuccess);
+      gltfLoaderInstance.load('models/tv.gltf', onDefaultGLTFLoadSuccess);
+      gltfLoaderInstance.load('models/starbase.gltf', onDefaultGLTFLoadSuccess);
+      gltfLoaderInstance.load('models/runway.gltf', onDefaultGLTFLoadSuccess);
+      gltfLoaderInstance.load('models/runway2.gltf', onDefaultGLTFLoadSuccess);
+      gltfLoaderInstance.load('models/model1a.gltf', onDefaultGLTFLoadSuccess);
+      gltfLoaderInstance.load('models/model2a.gltf', onDefaultGLTFLoadSuccess);
+      gltfLoaderInstance.load('models/model3a.gltf', onDefaultGLTFLoadSuccess);
+      gltfLoaderInstance.load('models/islands.gltf', onDefaultGLTFLoadSuccess);
     }
 
     function init() {
-
-
-
       //remove overlay
       var overlay = document.getElementById('overlay');
       overlay.remove();
-      window.addEventListener("load", function() {
-
-      });
+      window.addEventListener("load", function() {});
 
       var container = document.getElementById('container');
 
+      // clock
       clock = new THREE.Clock();
+
       //scene
       worldScene = new THREE.Scene();
       worldScene.fog = new THREE.Fog(0x162438, 30, 300);
 
 
-      //renderer
+      // normmal GL renderer
       renderer = new THREE.WebGLRenderer();
       renderer.setPixelRatio(window.devicePixelRatio);
       renderer.setSize(window.innerWidth, window.innerHeight);
       container.appendChild(renderer.domElement);
 
-      //camera
+      // camera
       camera = new THREE.PerspectiveCamera(40, window.innerWidth / window.innerHeight, 0.1, 15000);
       camera.position.z = 1;
 
 
-      //lights
+      // lights
       var light = new THREE.AmbientLight(0xffffff, 1);
       worldScene.add(light);
       var light2 = new THREE.PointLight(0xffffff, 0.1);
@@ -483,14 +408,13 @@
 
       // ground
       var geometry = new THREE.BufferGeometry();
-
       var grid = new THREE.GridHelper(500, 50, 0xbfbfbf, 0xbfbfbf);
       grid.material.opacity = 0.25;
       grid.material.transparent = false;
       grid.position.y = -20;
       worldScene.add(grid);
 
-      //skybox
+      // skybox
       var materialArray = [];
       var texture_nx = new THREE.TextureLoader().load('./textures/nx.png');
       var texture_pz = new THREE.TextureLoader().load('./textures/pz.png');
@@ -518,18 +442,16 @@
         map: texture_py
       }));
 
-      for (let i = 0; i < 6; i++)
+      for (let i = 0; i < 6; i++){
         materialArray[i].side = THREE.BackSide;
+      }
 
       var skyboxGeo = new THREE.BoxGeometry(1000, 1000, 1000);
       var skybox = new THREE.Mesh(skyboxGeo, materialArray);
       worldScene.add(skybox);
 
 
-
-
-
-
+      // youtube css3d
       var div = document.createElement( 'div' );
       div.style.width = '480px';
       div.style.height = '360px';
@@ -555,14 +477,14 @@
       window.cssObject  = cssObject
       cssScene.add(cssObject);
 
-
+      // css3d renderer
       cssRenderer = new THREE.CSS3DRenderer();
       cssRenderer.setSize( window.innerWidth, window.innerHeight );
       document.body.appendChild( cssRenderer.domElement );
 
 
 
-      //mobile check
+      // mobile check
       window.mobilecheck = function() {
         var check = false;
         (function(a) {
@@ -591,16 +513,118 @@
       mouse = new THREE.Vector2();
 
 
-      //three stuff
+      // keep all renderers correctly sized stuff
       window.addEventListener('resize', onWindowResize, false);
+
+      // events
       document.addEventListener('mousemove', onDocumentMouseMove, false);
       document.addEventListener('mousedown', onDocumentMouseDown, false);
     }
 
+    function animate() {
+      // set up recursize loop
+      requestAnimationFrame(animate);
 
+      // update mixer animations
+      var mixerUpdateDelta = clock.getDelta();
+      for (var i = 0; i < mixers.length; ++i) {
+        mixers[i].update(mixerUpdateDelta);
+      }
+
+      // render to both renderers
+      renderer.render(worldScene, camera);
+      cssRenderer.render(cssScene, camera);
+
+      // update user controls
+      controls.update();
+    }
+
+    function onStarLoadSuccess(gltf) {
+      console.log("Done loading star gltf model");
+      ++numLoadedModels;
+
+      var model = gltf.scene;
+      model.position.set(0, -5, 0);
+      model.rotation.y = 3.14159;
+      worldScene.add(model);
+
+      worldScene.traverse(function(model) {
+        model.frustumCulled = false;
+      });
+
+      gltf.scene.traverse(function(child) {
+        if (child.isMesh) {
+          child.material.alphaTest = 0.5;
+        }
+      });
+
+      // Begin animations for gltf if any exist
+      var mixer = new THREE.AnimationMixer(model);
+      if (gltf.animations.length) {
+        mixer.clipAction(gltf.animations[0]).play();
+        mixers.push(mixer);
+      }
+
+      model.children.forEach(function(child) {
+        child.children.forEach(function(grandchild) {
+          grandchild.userData = { URL: "https://itunes.apple.com/us/artist/wev/1356660469"};
+          grandchild.hitCallback = function () {
+            // TODO: This would make things mad simple
+          };
+          hittableMeshes.push(grandchild);
+        });
+      });
+
+      checkIfAllModelsAreLoaded();
+    }
+
+    function onDefaultGLTFLoadSuccess(gltf) {
+      console.log("Done loading default gltf model");
+      ++numLoadedModels;
+
+      var model = gltf.scene;
+      model.position.set(0, -5, 0);
+      model.rotation.y = 3.14159;
+      worldScene.add(model);
+
+      worldScene.traverse(function(model) {
+        model.frustumCulled = false;
+      });
+
+      gltf.scene.traverse(function(child) {
+        if (child.isMesh) {
+          child.material.alphaTest = 0.5;
+        }
+      });
+
+      // Begin animations for gltf if any exist
+      var mixer = new THREE.AnimationMixer(model);
+      if (gltf.animations.length) {
+        mixer.clipAction(gltf.animations[0]).play();
+        mixers.push(mixer);
+      }
+
+      checkIfAllModelsAreLoaded();
+    }
+
+    function checkIfAllModelsAreLoaded() {
+      // Check for final model being loaded
+      if (numLoadedModels === totalNumOfModels) {
+        console.log("All models loaded, time to start animating...");
+        // Remove loader
+        loader.className += " hidden";
+        // Set all mixer animations to time 0
+        mixers.forEach(function(mixer) {
+           mixer.setTime(0);
+        });
+        // Begin animation loop
+        animate();
+      }
+    }
 
     function onDocumentMouseMove(event) {
       event.preventDefault();
+      // simply update our mouse xy coordinates
       mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
       mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
     }
