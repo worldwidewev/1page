@@ -567,9 +567,8 @@
 
       model.children.forEach(function(child) {
         child.children.forEach(function(grandchild) {
-          grandchild.userData = { URL: "https://itunes.apple.com/us/artist/wev/1356660469"};
-          grandchild.hitCallback = function () {
-            // TODO: This would make things mad simple
+          grandchild.userData.hitCallback = function () {
+            window.open("https://itunes.apple.com/us/artist/wev/1356660469");
           };
           hittableMeshes.push(grandchild);
         });
@@ -624,7 +623,7 @@
 
     function onDocumentMouseMove(event) {
       event.preventDefault();
-      // simply update our mouse xy coordinates
+      // simply update our mouse x and y coordinates on the vec2
       mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
       mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
     }
@@ -635,7 +634,10 @@
 
       var intersects = raycaster.intersectObjects( hittableMeshes, true );
       if (intersects.length) {
-        window.open(intersects[0].object.userData.URL);
+        // Execute custom callback attached to object if present
+        if(intersects[0].object.userData.hitCallback) {
+          intersects[0].object.userData.hitCallback();
+        }
       }
     }
 
