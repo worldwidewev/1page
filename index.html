@@ -623,6 +623,11 @@
       event.preventDefault();
       raycaster.setFromCamera( mouse, camera );
 
+      if(loader.classList.contains('hidden') === false) {
+        // don't do hit detection while the loader is showing
+        return;
+      }
+
       var intersects = raycaster.intersectObjects( hittableMeshes, true );
       if (intersects.length) {
         // Execute custom callback attached to object if present
