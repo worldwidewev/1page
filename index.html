@@ -1,11 +1,9 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
   <title>worldwidewev</title>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
-
   <link rel="shortcut icon" type="image/x-icon" href="img/W-3D2.ico">
   <style>
     body {
@@ -29,8 +27,6 @@
     a {
       color: #0800ff;
     }
-
-
 
     #container {
       position: fixed !important;
@@ -118,90 +114,66 @@
       ::-webkit-scrollbar {
         display: none;
       }
+    }
 
-      .loader {
+    .loader {
+      position: fixed;
+      z-index: 99;
+    }
 
-        position: fixed;
-        z-index: 99;
+		@keyframes modalopen {
+		  from {
+		    opacity: 0;
+		  }
+		  to {
+		    opacity: 1;
+		  }
+		}
 
-      }
+    .modal-close {
+      color: #ccc;
+      float: right;
+      font-size: 30px;
+      color: #fff;
+      height: 30px;
+      width: 30px;
+      background: red;
+      z-index: 2000;
+      position: absolute;
+      text-decoration: none;
+      text-align: center;
+      top: 0;
+      right: 0;
+    }
 
-			:root {
-			  --modal-duration: 1s;
-			  --modal-color: #428bca;
-			}
+    .modal-close:hover,
+    .modal-close:focus {
+      color: #000;
+      text-decoration: none;
+      cursor: pointer;
+    }
 
+    .hidden {
+      display: none;
+      opacity: 0;
+      z-index: -1000;
+    }
 
-			#modal {
-			  display: none;
-			  position: fixed;
-			  z-index: 1;
-			  left: 0;
-			  top: 0;
-			  height: 100%;
-			  width: 100%;
-			  overflow: auto;
-			  background-color: rgba(0, 0, 0, 0.5);
-			}
-
-			#modal-content {
-			  margin: 10% auto;
-			  width: 60%;
-			  box-shadow: 0 5px 8px 0 rgba(0, 0, 0, 0.2), 0 7px 20px 0 rgba(0, 0, 0, 0.17);
-			  animation-name: modalopen;
-			  animation-duration: var(--modal-duration);
-			}
-
-			#modal-header h2,
-			#modal-footer h3 {
-			  margin: 0;
-			}
-
-			#modal-header {
-			  background: var(--modal-color);
-			  padding: 15px;
-			  color: #fff;
-			  border-top-left-radius: 5px;
-			  border-top-right-radius: 5px;
-			}
-
-			#modal-body {
-			  padding: 10px 20px;
-			  background: #fff;
-			}
-
-			#modal-footer {
-			  background: var(--modal-color);
-			  padding: 10px;
-			  color: #fff;
-			  text-align: center;
-			  border-bottom-left-radius: 5px;
-			  border-bottom-right-radius: 5px;
-			}
-
-			#close {
-			  color: #ccc;
-			  float: right;
-			  font-size: 30px;
-			  color: #fff;
-			}
-
-			#close:hover,
-			#close:focus {
-			  color: #000;
-			  text-decoration: none;
-			  cursor: pointer;
-			}
-
-			@keyframes modalopen {
-			  from {
-			    opacity: 0;
-			  }
-			  to {
-			    opacity: 1;
-			  }
-			}
-
+    .star-modal {
+      position: absolute;
+      height: 90vh;
+      width: 90vw;
+      margin: auto;
+      top: 0;
+      right: 0;
+      bottom: 0;
+      left: 0;
+      background: white;
+      z-index: 1000;
+      overflow: scroll;
+      animation-name: modalopen;
+      animation-duration: 1s;
+    }
   </style>
 </head>
 
@@ -214,6 +186,46 @@
   <div id="loader">
     <img src="loading.gif" alt="Loading..." />
   </div>
+  <div class="star-modal hidden">
+    <div class="star-modal-body">
+      This is a modal example that scrolls<br>
+      Style me like one of your french girls<br><br>
+      This is a modal example that scrolls<br>
+      Style me like one of your french girls<br><br>
+      This is a modal example that scrolls<br>
+      Style me like one of your french girls<br><br>
+      This is a modal example that scrolls<br>
+      Style me like one of your french girls<br><br>
+      This is a modal example that scrolls<br>
+      Style me like one of your french girls<br><br>
+      This is a modal example that scrolls<br>
+      Style me like one of your french girls<br><br>
+      This is a modal example that scrolls<br>
+      Style me like one of your french girls<br><br>
+      This is a modal example that scrolls<br>
+      Style me like one of your french girls<br><br>
+      This is a modal example that scrolls<br>
+      Style me like one of your french girls<br><br>
+      This is a modal example that scrolls<br>
+      Style me like one of your french girls<br><br>
+      This is a modal example that scrolls<br>
+      Style me like one of your french girls<br><br>
+      This is a modal example that scrolls<br>
+      Style me like one of your french girls<br><br>
+      This is a modal example that scrolls<br>
+      Style me like one of your french girls<br><br>
+      This is a modal example that scrolls<br>
+      Style me like one of your french girls<br><br>
+      This is a modal example that scrolls<br>
+      Style me like one of your french girls<br><br>
+      This is a modal example that scrolls<br>
+      Style me like one of your french girls<br><br>
+      This is a modal example that scrolls<br>
+      Style me like one of your french girls<br><br>
+    </div>
+    <div class="modal-close" onClick="document.querySelector('.star-modal').classList.add('hidden')">
+      x
+    </div>
   </div>
 
   <div id="container"></div>
@@ -239,11 +251,12 @@
     var clock = null;
     var mixers = [];
     var hittableMeshes = [];
-    var numLoadedModels = 0;
-    var totalNumOfModels = 10;
 
+    var container = document.getElementById('container');
     var loader = document.getElementById('loader');
+    var starModal = document.querySelector('.star-modal');
 
+    // 3D MODEL NAMES
     var starModelName = 'star';
     var cdModelName = 'cd';
     var tvModelName = 'tv';
@@ -253,46 +266,13 @@
     var idk1ModelName = 'model1a';
     var idk2ModelName = 'model2a';
     var idk3ModelName = 'model3a';
-    var islandsModelName = 'islands';
+    var islandsModelName = 'islands'; // NOTE: 10th and final model
+    var numLoadedModels = 0;
+    var totalNumOfModels = 10; // NOTE: must match the number of models we load
 
-    //3D models
-    var MODELS = [{
-        name: "star"
-      },
+    // NOTE: UNITS is dead code and just here for reference/history sake
+    var UNITS = [
       {
-        name: "cd"
-      },
-      {
-        name: "tv"
-      },
-      {
-        name: "starbase"
-      },
-      {
-        name: "runway"
-      },
-      {
-        name: "runway2"
-      },
-      {
-        name: "model1a"
-      },
-
-      {
-        name: "model2a"
-      },
-
-      {
-        name: "model3a"
-      },
-      {
-        name: "islands"
-      },
-    ];
-
-    // WARNING: UNITS is no longer used
-    // Only left this dead code here for reference
-    var UNITS = [{
         modelName: "star",
         meshName: "Sphere.004",
         position: {
@@ -333,9 +313,9 @@
       },
     ];
 
-    //overlay div for device orientation API
+    // overlay div for device orientation API
     var startButton = document.getElementById('startButton');
-    //when button is hit, we load and initalize the experience
+    // when button is hit, we load and initalize the experience
     startButton.addEventListener('click', function() {
       init();
       loadModels();
@@ -344,8 +324,6 @@
 
 
     function loadModels() {
-      //loadGltfModel('models/star.gltf', onStarLoadSuccess);
-
       var manager = new THREE.LoadingManager();
       manager.onStart = function(url, itemsLoaded, itemsTotal) {
         console.log('Started loading file: '
@@ -361,6 +339,12 @@
 
       var gltfLoaderInstance = new THREE.GLTFLoader(manager);
 
+      /*
+       * Load in all 10 GLTF models:
+       * - If model requires no customization use onDefaultGLTFLoadSuccess
+       * - If model requires customization after loading create a custom handler
+       *   and made sure it follows the template of onStarLoadSuccess
+       */
       gltfLoaderInstance.load('models/star.gltf', onStarLoadSuccess);
       gltfLoaderInstance.load('models/cd.gltf', onDefaultGLTFLoadSuccess);
       gltfLoaderInstance.load('models/tv.gltf', onDefaultGLTFLoadSuccess);
@@ -378,8 +362,6 @@
       var overlay = document.getElementById('overlay');
       overlay.remove();
       window.addEventListener("load", function() {});
-
-      var container = document.getElementById('container');
 
       // clock
       clock = new THREE.Clock();
@@ -540,47 +522,49 @@
     }
 
     function onStarLoadSuccess(gltf) {
-      console.log("Done loading star gltf model");
+      console.log("Done loading star gltf model that needs customization");
+
+       // Do standard stuff we do for all GLTF models that get loaded
       ++numLoadedModels;
-
       var model = gltf.scene;
-      model.position.set(0, -5, 0);
-      model.rotation.y = 3.14159;
-      worldScene.add(model);
+      placeGLTFModelInSceneAndAnimate(gltf);
 
-      worldScene.traverse(function(model) {
-        model.frustumCulled = false;
-      });
+      // START CUSTOMIZATION HERE
 
-      gltf.scene.traverse(function(child) {
-        if (child.isMesh) {
-          child.material.alphaTest = 0.5;
-        }
-      });
-
-      // Begin animations for gltf if any exist
-      var mixer = new THREE.AnimationMixer(model);
-      if (gltf.animations.length) {
-        mixer.clipAction(gltf.animations[0]).play();
-        mixers.push(mixer);
-      }
-
+      // In this intance let's add hit detection and open a modal
       model.children.forEach(function(child) {
         child.children.forEach(function(grandchild) {
+          // Add raycaster hit detection callback
           grandchild.userData.hitCallback = function () {
+            // open link in new tab
             window.open("https://itunes.apple.com/us/artist/wev/1356660469");
+            // show the modal
+            starModal.classList.remove('hidden');
           };
+          // Add mesh to list of hittable meshes
           hittableMeshes.push(grandchild);
         });
       });
 
+      // END CUSTOMIZATION HERE
+
+      // Start animation loop if we were ready
       checkIfAllModelsAreLoaded();
     }
 
     function onDefaultGLTFLoadSuccess(gltf) {
-      console.log("Done loading default gltf model");
-      ++numLoadedModels;
+      console.log("Done loading gltf model that needs no custmomization");
 
+      // Do standard stuff we do for all GLTF models that get loaded
+      ++numLoadedModels;
+      var model = gltf.scene;
+      placeGLTFModelInSceneAndAnimate(gltf);
+
+      // Start animation loop if we were ready
+      checkIfAllModelsAreLoaded();
+    }
+
+    function placeGLTFModelInSceneAndAnimate(gltf) {
       var model = gltf.scene;
       model.position.set(0, -5, 0);
       model.rotation.y = 3.14159;
@@ -602,8 +586,6 @@
         mixer.clipAction(gltf.animations[0]).play();
         mixers.push(mixer);
       }
-
-      checkIfAllModelsAreLoaded();
     }
 
     function checkIfAllModelsAreLoaded() {
