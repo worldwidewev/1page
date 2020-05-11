@@ -274,6 +274,7 @@
     var idk3ModelName = 'model3a';
     var islandsModelName = 'islands';
     var lookupModelName = 'lookup';
+    var osModelName = 'OS';
     var numLoadedModels = 0;
     var totalNumOfModels = 12; // NOTE: must match the number of models we load
 
@@ -322,6 +323,7 @@
       gltfLoaderInstance.load('models/model3a.gltf', onDefaultGLTFLoadSuccess);
       gltfLoaderInstance.load('models/islands.gltf', onDefaultGLTFLoadSuccess);
       gltfLoaderInstance.load('models/lookup.gltf', onDefaultGLTFLoadSuccess);
+      gltfLoaderInstance.load('models/OS.gltf', onDefaultGLTFLoadSuccess);
     }
 
     function init() {
@@ -455,9 +457,9 @@
       } else {
         controls = new THREE.OrbitControls(camera, renderer.domElement);
         controls = new THREE.OrbitControls(camera, cssRenderer.domElement);
-        //controls.minPolarAngle = Math.PI / 2 - 0.2;
-        //controls.enablePan = false;
-        //controls.enableZoom = false;
+        controls.minPolarAngle = Math.PI / 2 - 0.2;
+        controls.enablePan = false;
+        controls.enableZoom = false;
       }
 
       // For click+hit detection
