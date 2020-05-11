@@ -239,7 +239,6 @@
   <script src="js/GLTFLoader.js"></script>
   <script src="js/stats.min.js"></script>
   <script src="js/CSS3DRenderer.js"></script>
-  <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/amplitudejs@{{5.03}}/dist/amplitude.js"></script>
 
   <script>
     var controls;
@@ -263,6 +262,7 @@
     var starModelName = 'star';
     var cdModelName = 'cd';
     var tvModelName = 'tv';
+    var faceModel = 'face';
     var starbaseModelName = 'starbase'
     var runway1ModelName = 'runway';
     var runway2ModelName = 'runway2';
@@ -271,7 +271,7 @@
     var idk3ModelName = 'model3a';
     var islandsModelName = 'islands'; // NOTE: 10th and final model
     var numLoadedModels = 0;
-    var totalNumOfModels = 10; // NOTE: must match the number of models we load
+    var totalNumOfModels = 11; // NOTE: must match the number of models we load
 
 
     // overlay div for device orientation API
@@ -307,7 +307,8 @@
        *   and made sure it follows the template of onStarLoadSuccess
        */
       gltfLoaderInstance.load('models/star.gltf', onStarLoadSuccess);
-      gltfLoaderInstance.load('models/cd.gltf', onDefaultGLTFLoadSuccess);
+      gltfLoaderInstance.load('models/cd.gltf', onCDLoadSuccess);
+      gltfLoaderInstance.load('models/face.gltf', onFaceLoadSuccess);
       gltfLoaderInstance.load('models/tv.gltf', onDefaultGLTFLoadSuccess);
       gltfLoaderInstance.load('models/starbase.gltf', onDefaultGLTFLoadSuccess);
       gltfLoaderInstance.load('models/runway.gltf', onDefaultGLTFLoadSuccess);
@@ -501,6 +502,67 @@
             //window.open("https://itunes.apple.com/us/artist/wev/1356660469");
             // show the modal
             starModal.classList.remove('hidden');
+          };
+          // Add mesh to list of hittable meshes
+          hittableMeshes.push(grandchild);
+        });
+      });
+
+      // END CUSTOMIZATION HERE
+
+      // Start animation loop if we were ready
+      checkIfAllModelsAreLoaded();
+    }
+
+    function onFaceLoadSuccess(gltf) {
+      console.log("Done loading star gltf model that needs customization");
+
+       // Do standard stuff we do for all GLTF models that get loaded
+      ++numLoadedModels;
+      var model = gltf.scene;
+      placeGLTFModelInSceneAndAnimate(gltf);
+
+      // START CUSTOMIZATION HERE
+
+      // In this intance let's add hit detection and open a modal
+      model.children.forEach(function(child) {
+        child.children.forEach(function(grandchild) {
+          // Add raycaster hit detection callback
+          grandchild.userData.hitCallback = function () {
+            // open link in new tab
+            //window.open("https://itunes.apple.com/us/artist/wev/1356660469");
+            // show the modal
+            starModal.classList.remove('hidden');
+          };
+          // Add mesh to list of hittable meshes
+          hittableMeshes.push(grandchild);
+        });
+      });
+
+      // END CUSTOMIZATION HERE
+
+      // Start animation loop if we were ready
+      checkIfAllModelsAreLoaded();
+    }
+
+    function onCDLoadSuccess(gltf) {
+      console.log("Done loading cd gltf model that needs customization");
+
+       // Do standard stuff we do for all GLTF models that get loaded
+      ++numLoadedModels;
+      var model = gltf.scene;
+      placeGLTFModelInSceneAndAnimate(gltf);
+
+      // START CUSTOMIZATION HERE
+
+      // In this intance let's add hit detection and open a modal
+      model.children.forEach(function(child) {
+        child.children.forEach(function(grandchild) {
+          // Add raycaster hit detection callback
+          grandchild.userData.hitCallback = function () {
+            // open link in new tab
+            window.open("https://soundcloud.com/worldwidewev/sets/poly/s-qJ1Ya");
+            // show the modal
           };
           // Add mesh to list of hittable meshes
           hittableMeshes.push(grandchild);
