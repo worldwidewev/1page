@@ -471,6 +471,8 @@
       iframe.style.top = '0';
       iframe.style.left = '0';
       iframe.src = 'https://www.youtube.com/embed/Kmql7206JjI?playsinline=1';
+      iframe.allow = "accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture";
+      iframe.allowfullscreen = true;
       div.appendChild(iframe);
 
       var cssObject = new THREE.CSS3DObject(div);
