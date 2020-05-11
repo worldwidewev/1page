@@ -272,9 +272,10 @@
     var idk1ModelName = 'model1a';
     var idk2ModelName = 'model2a';
     var idk3ModelName = 'model3a';
-    var islandsModelName = 'islands'; // NOTE: 10th and final model
+    var islandsModelName = 'islands';
+    var lookupModelName = 'lookup';
     var numLoadedModels = 0;
-    var totalNumOfModels = 11; // NOTE: must match the number of models we load
+    var totalNumOfModels = 12; // NOTE: must match the number of models we load
 
 
     // overlay div for device orientation API
@@ -320,6 +321,7 @@
       gltfLoaderInstance.load('models/model2a.gltf', onDefaultGLTFLoadSuccess);
       gltfLoaderInstance.load('models/model3a.gltf', onDefaultGLTFLoadSuccess);
       gltfLoaderInstance.load('models/islands.gltf', onDefaultGLTFLoadSuccess);
+      gltfLoaderInstance.load('models/lookup.gltf', onDefaultGLTFLoadSuccess);
     }
 
     function init() {
