@@ -171,8 +171,8 @@
     .star-modal {
       position: absolute;
       font-size: 30px;
-      height: 500px;
-      width: 300px;
+      height: 80%;
+      width: 80%;
       margin: auto;
       top: 0;
       right: 0;
@@ -201,13 +201,29 @@
   <div class="star-modal hidden">
     <div class="star-modal-body">
       <br>
-      <b>Vision:</b>
+      <h1>/// Vision ///</h1>
       <br><br>
     *Utilize existing technologies and platforms to provide an innovative, interactive, and accessible visual experience alongside my music. <br><br>
 
     *Combine analog sounds with early video game style graphics to contextualize nostalgia, interactivity, and virtual escapism <br><br>
 
     *Foster community via shared interactive experiences <br><br>
+
+    <h1>/// Implementation ///</h1>
+<br><br>
+*Develop web based AR applications as integrated touch points that encourage physical movement, interaction, and creativity. Examples include:
+<br><br>
+
+     -Navigate website, merch shop via mobile device orientation
+<br><br>
+     -Viewer contribution to on screen visuals during livestream
+<br><br>
+     -Audience controlled game or construction of visual during livestream
+<br><br>
+
+     -AR camera connected to sticker or physical merch for UGC<br><br>
+     -360 “VR” music video using mobile device orientation<br><br>
+
 
     </div>
     <div class="modal-close" onClick="document.querySelector('.star-modal').classList.add('hidden')">
@@ -223,6 +239,7 @@
   <script src="js/GLTFLoader.js"></script>
   <script src="js/stats.min.js"></script>
   <script src="js/CSS3DRenderer.js"></script>
+  <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/amplitudejs@{{5.03}}/dist/amplitude.js"></script>
 
   <script>
     var controls;
