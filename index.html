@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <!-- CREDITS                                        -->
 
@@ -27,7 +28,7 @@
       font-family: Arial, Helvetica, sans-serif;
       overflow: hidden !important;
       font-size: 100;
-      color:white;
+      color: white;
       text-align: center;
       font-weight: normal;
       text-align: center;
@@ -130,14 +131,15 @@
       z-index: 99;
     }
 
-		@keyframes modalopen {
-		  from {
-		    opacity: 0;
-		  }
-		  to {
-		    opacity: 1;
-		  }
-		}
+    @keyframes modalopen {
+      from {
+        opacity: 0;
+      }
+
+      to {
+        opacity: 1;
+      }
+    }
 
     .modal-close {
       color: #ccc;
@@ -204,26 +206,26 @@
       <br>
       <h1>/// Vision ///</h1>
       <br>
-    *Utilize existing technologies and platforms to provide an innovative, interactive, and accessible visual experience alongside my music. <br><br>
+      *Utilize existing technologies and platforms to provide an innovative, interactive, and accessible visual experience alongside my music. <br><br>
 
-    *Combine analog sounds with early video game style graphics to contextualize nostalgia, interactivity, and virtual escapism <br><br>
+      *Combine analog sounds with early video game style graphics to contextualize nostalgia, interactivity, and virtual escapism <br><br>
 
-    *Foster community via shared interactive experiences <br><br>
+      *Foster community via shared interactive experiences <br><br>
 
-    <h1>/// Implementation ///</h1>
-<br>
-*Develop web based AR applications as integrated touch points that encourage physical movement, interaction, and creativity. Examples include:
-<br><br>
+      <h1>/// Implementation ///</h1>
+      <br>
+      *Develop web based AR applications as integrated touch points that encourage physical movement, interaction, and creativity. Examples include:
+      <br><br>
 
-     -Navigate website, merch shop via mobile device orientation
-<br><br>
-     -Viewer contribution to on screen visuals during livestream
-<br><br>
-     -Audience controlled game or construction of visual during livestream
-<br><br>
+      -Navigate website, merch shop via mobile device orientation
+      <br><br>
+      -Viewer contribution to on screen visuals during livestream
+      <br><br>
+      -Audience controlled game or construction of visual during livestream
+      <br><br>
 
-     -AR camera connected to sticker or physical merch for UGC<br><br>
-     -360 “VR” music video using mobile device orientation<br><br>
+      -AR camera connected to sticker or physical merch for UGC<br><br>
+      -360 “VR” music video using mobile device orientation<br><br>
 
 
     </div>
@@ -234,12 +236,12 @@
 
   <div id="container"></div>
   <script src="js/three.js"></script>
-  <script src="js/3Dink.js"></script>
   <script src="js/DeviceOrientationControls.js"></script>
   <script src="js/OrbitControls.js"></script>
   <script src="js/GLTFLoader.js"></script>
   <script src="js/stats.min.js"></script>
   <script src="js/CSS3DRenderer.js"></script>
+
 
   <script>
     var controls;
@@ -288,8 +290,8 @@
     function loadModels() {
       var manager = new THREE.LoadingManager();
       manager.onStart = function(url, itemsLoaded, itemsTotal) {
-        console.log('Started loading file: '
-          + url + '.\nLoaded ' + itemsLoaded + ' of ' + itemsTotal + ' files.'
+        console.log('Started loading file: ' +
+          url + '.\nLoaded ' + itemsLoaded + ' of ' + itemsTotal + ' files.'
         );
       };
       manager.onLoad = function() {
@@ -359,6 +361,9 @@
       grid.position.y = -20;
       worldScene.add(grid);
 
+
+
+
       // skybox
       var materialArray = [];
       var texture_nx = new THREE.TextureLoader().load('./textures/nx.png');
@@ -387,7 +392,7 @@
         map: texture_py
       }));
 
-      for (let i = 0; i < 6; i++){
+      for (let i = 0; i < 6; i++) {
         materialArray[i].side = THREE.BackSide;
       }
 
@@ -397,14 +402,14 @@
 
 
       // youtube css3d
-      var div = document.createElement( 'div' );
+      var div = document.createElement('div');
       div.style.width = '480px';
       div.style.height = '360px';
       div.style.backgroundColor = '#FFF';
       div.style.position = 'fixed';
       div.style.zIndex = -10000;
 
-      var iframe = document.createElement( 'iframe' );
+      var iframe = document.createElement('iframe');
       iframe.style.width = '480px';
       iframe.style.height = '360px';
       iframe.style.border = '0px';
@@ -412,20 +417,20 @@
       iframe.style.top = '0';
       iframe.style.left = '0';
       iframe.src = 'https://www.youtube.com/embed/Kmql7206JjI?playsinline=1';
-      div.appendChild( iframe );
+      div.appendChild(iframe);
 
-      var cssObject = new THREE.CSS3DObject( div );
-      cssObject.scale.multiplyScalar(1/50); // for some reason default is really big
-      cssObject.position.set( 0, 3.9, 33 ); // this is set to be "inside" the TV model
-			cssObject.rotation.y = 3.14159;
+      var cssObject = new THREE.CSS3DObject(div);
+      cssObject.scale.multiplyScalar(1 / 50); // for some reason default is really big
+      cssObject.position.set(0, 3.9, 33); // this is set to be "inside" the TV model
+      cssObject.rotation.y = 3.14159;
 
-      window.cssObject  = cssObject
+      window.cssObject = cssObject
       cssScene.add(cssObject);
 
       // css3d renderer
       cssRenderer = new THREE.CSS3DRenderer();
-      cssRenderer.setSize( window.innerWidth, window.innerHeight );
-      document.body.appendChild( cssRenderer.domElement );
+      cssRenderer.setSize(window.innerWidth, window.innerHeight);
+      document.body.appendChild(cssRenderer.domElement);
 
 
 
@@ -448,9 +453,9 @@
       } else {
         controls = new THREE.OrbitControls(camera, renderer.domElement);
         controls = new THREE.OrbitControls(camera, cssRenderer.domElement);
-        controls.minPolarAngle = Math.PI / 2 - 0.2;
-        controls.enablePan = false;
-        controls.enableZoom = false;
+        //controls.minPolarAngle = Math.PI / 2 - 0.2;
+        //controls.enablePan = false;
+        //controls.enableZoom = false;
       }
 
       // For click+hit detection
@@ -487,7 +492,7 @@
     function onStarLoadSuccess(gltf) {
       console.log("Done loading star gltf model that needs customization");
 
-       // Do standard stuff we do for all GLTF models that get loaded
+      // Do standard stuff we do for all GLTF models that get loaded
       ++numLoadedModels;
       var model = gltf.scene;
       placeGLTFModelInSceneAndAnimate(gltf);
@@ -498,7 +503,7 @@
       model.children.forEach(function(child) {
         child.children.forEach(function(grandchild) {
           // Add raycaster hit detection callback
-          grandchild.userData.hitCallback = function () {
+          grandchild.userData.hitCallback = function() {
             // open link in new tab
             //window.open("https://itunes.apple.com/us/artist/wev/1356660469");
             // show the modal
@@ -518,7 +523,7 @@
     function onFaceLoadSuccess(gltf) {
       console.log("Done loading star gltf model that needs customization");
 
-       // Do standard stuff we do for all GLTF models that get loaded
+      // Do standard stuff we do for all GLTF models that get loaded
       ++numLoadedModels;
       var model = gltf.scene;
       placeGLTFModelInSceneAndAnimate(gltf);
@@ -529,7 +534,7 @@
       model.children.forEach(function(child) {
         child.children.forEach(function(grandchild) {
           // Add raycaster hit detection callback
-          grandchild.userData.hitCallback = function () {
+          grandchild.userData.hitCallback = function() {
             // open link in new tab
             //window.open("https://itunes.apple.com/us/artist/wev/1356660469");
             // show the modal
@@ -549,7 +554,7 @@
     function onCDLoadSuccess(gltf) {
       console.log("Done loading cd gltf model that needs customization");
 
-       // Do standard stuff we do for all GLTF models that get loaded
+      // Do standard stuff we do for all GLTF models that get loaded
       ++numLoadedModels;
       var model = gltf.scene;
       placeGLTFModelInSceneAndAnimate(gltf);
@@ -560,7 +565,7 @@
       model.children.forEach(function(child) {
         child.children.forEach(function(grandchild) {
           // Add raycaster hit detection callback
-          grandchild.userData.hitCallback = function () {
+          grandchild.userData.hitCallback = function() {
             // open link in new tab
             window.open("https://soundcloud.com/worldwidewev/sets/poly/s-qJ1Ya");
             // show the modal
@@ -620,7 +625,7 @@
         loader.className += " hidden";
         // Set all mixer animations to time 0
         mixers.forEach(function(mixer) {
-           mixer.setTime(0);
+          mixer.setTime(0);
         });
         // Begin animation loop
         animate();
@@ -636,17 +641,17 @@
 
     function onDocumentMouseDown(event) {
       event.preventDefault();
-      raycaster.setFromCamera( mouse, camera );
+      raycaster.setFromCamera(mouse, camera);
 
-      if(loader.classList.contains('hidden') === false) {
+      if (loader.classList.contains('hidden') === false) {
         // don't do hit detection while the loader is showing
         return;
       }
 
-      var intersects = raycaster.intersectObjects( hittableMeshes, true );
+      var intersects = raycaster.intersectObjects(hittableMeshes, true);
       if (intersects.length) {
         // Execute custom callback attached to object if present
-        if(intersects[0].object.userData.hitCallback) {
+        if (intersects[0].object.userData.hitCallback) {
           intersects[0].object.userData.hitCallback();
         }
       }
