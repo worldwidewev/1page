@@ -24,10 +24,10 @@
       background-color: #f0f0f0;
       margin: 0px;
       overflow: hidden;
-      font-family: Courier;
+      font-family: Arial, Helvetica, sans-serif;
       overflow: hidden !important;
-      font-size: 13;
-
+      font-size: 100;
+      color:white;
       text-align: center;
       font-weight: normal;
       text-align: center;
@@ -110,7 +110,7 @@
 
     #info {
       color: #fff;
-      font-family: Courier;
+      font-family: Arial, Helvetica, sans-serif;
       position: relative;
       top: 85%;
       left: 0;
@@ -142,11 +142,11 @@
     .modal-close {
       color: #ccc;
       float: right;
-      font-size: 30px;
+      font-size: 15px;
       color: #fff;
       height: 30px;
       width: 30px;
-      background: red;
+      background-color: rgba(0,0,0,0.75);
       z-index: 2000;
       position: absolute;
       text-decoration: none;
@@ -157,7 +157,7 @@
 
     .modal-close:hover,
     .modal-close:focus {
-      color: #000;
+      color: #fff;
       text-decoration: none;
       cursor: pointer;
     }
@@ -170,18 +170,21 @@
 
     .star-modal {
       position: absolute;
-      height: 90vh;
-      width: 90vw;
+      font-size: 30px;
+      height: 500px;
+      width: 300px;
       margin: auto;
       top: 0;
       right: 0;
       bottom: 0;
       left: 0;
-      background: white;
+      padding: 5vh;
+      background-color: rgba(0, 0, 0, 0.75);
       z-index: 1000;
       overflow: scroll;
+      text-align: left;
       animation-name: modalopen;
-      animation-duration: 1s;
+      animation-duration: 0.5s;
     }
   </style>
 </head>
@@ -197,43 +200,18 @@
   </div>
   <div class="star-modal hidden">
     <div class="star-modal-body">
-      This is a modal example that scrolls<br>
-      Style me like one of your french girls<br><br>
-      This is a modal example that scrolls<br>
-      Style me like one of your french girls<br><br>
-      This is a modal example that scrolls<br>
-      Style me like one of your french girls<br><br>
-      This is a modal example that scrolls<br>
-      Style me like one of your french girls<br><br>
-      This is a modal example that scrolls<br>
-      Style me like one of your french girls<br><br>
-      This is a modal example that scrolls<br>
-      Style me like one of your french girls<br><br>
-      This is a modal example that scrolls<br>
-      Style me like one of your french girls<br><br>
-      This is a modal example that scrolls<br>
-      Style me like one of your french girls<br><br>
-      This is a modal example that scrolls<br>
-      Style me like one of your french girls<br><br>
-      This is a modal example that scrolls<br>
-      Style me like one of your french girls<br><br>
-      This is a modal example that scrolls<br>
-      Style me like one of your french girls<br><br>
-      This is a modal example that scrolls<br>
-      Style me like one of your french girls<br><br>
-      This is a modal example that scrolls<br>
-      Style me like one of your french girls<br><br>
-      This is a modal example that scrolls<br>
-      Style me like one of your french girls<br><br>
-      This is a modal example that scrolls<br>
-      Style me like one of your french girls<br><br>
-      This is a modal example that scrolls<br>
-      Style me like one of your french girls<br><br>
-      This is a modal example that scrolls<br>
-      Style me like one of your french girls<br><br>
+      <br>
+      <b>Vision:</b>
+      <br><br>
+    *Utilize existing technologies and platforms to provide an innovative, interactive, and accessible visual experience alongside my music. <br><br>
+
+    *Combine analog sounds with early video game style graphics to contextualize nostalgia, interactivity, and virtual escapism <br><br>
+
+    *Foster community via shared interactive experiences <br><br>
+
     </div>
     <div class="modal-close" onClick="document.querySelector('.star-modal').classList.add('hidden')">
-      x
+      X
     </div>
   </div>
 
@@ -245,7 +223,6 @@
   <script src="js/GLTFLoader.js"></script>
   <script src="js/stats.min.js"></script>
   <script src="js/CSS3DRenderer.js"></script>
-  <script src="js/threex.htmlmixer.js"></script>
 
   <script>
     var controls;
@@ -279,48 +256,6 @@
     var numLoadedModels = 0;
     var totalNumOfModels = 10; // NOTE: must match the number of models we load
 
-    // NOTE: UNITS is dead code and just here for reference/history sake
-    var UNITS = [
-      {
-        modelName: "star",
-        meshName: "Sphere.004",
-        position: {
-          x: 0,
-          y: -15,
-          z: -150
-        },
-
-        scale: 1,
-      },
-      {
-        modelName: "runway",
-        position: {
-          x: 50,
-          y: -5,
-          z: 0
-        },
-        rotation: {
-          x: 0,
-          y: 3.14159,
-          z: 0
-        },
-        scale: 1,
-      },
-      {
-        modelName: "cd",
-        position: {
-          x: -50,
-          y: -5,
-          z: 0
-        },
-        rotation: {
-          x: 0,
-          y: 3.14159,
-          z: 0
-        },
-        scale: 1,
-      },
-    ];
 
     // overlay div for device orientation API
     var startButton = document.getElementById('startButton');
@@ -546,7 +481,7 @@
           // Add raycaster hit detection callback
           grandchild.userData.hitCallback = function () {
             // open link in new tab
-            window.open("https://itunes.apple.com/us/artist/wev/1356660469");
+            //window.open("https://itunes.apple.com/us/artist/wev/1356660469");
             // show the modal
             starModal.classList.remove('hidden');
           };
