@@ -586,9 +586,9 @@ Tyler, The Creator<br>
       } else {
         controls = new THREE.OrbitControls(camera, renderer.domElement);
         controls = new THREE.OrbitControls(camera, cssRenderer.domElement);
-        //controls.minPolarAngle = Math.PI / 2 - 0.2;
-        //controls.enablePan = false;
-        //controls.enableZoom = false;
+        controls.minPolarAngle = Math.PI / 2 - 0.2;
+        controls.enablePan = false;
+        controls.enableZoom = false;
       }
 
       // For click+hit detection
