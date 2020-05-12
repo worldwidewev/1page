@@ -190,8 +190,45 @@
       animation-duration: 0.5s;
     }
 
+    .goal-modal {
+      position: absolute;
+      font-size: 3vw;
+      height: 80%;
+      width: 80%;
+      margin: auto;
+      top: 0;
+      right: 0;
+      bottom: 0;
+      left: 0;
+      padding: 5vh;
+      background-color: rgba(0, 0, 0, 0.75);
+      z-index: 1000;
+      overflow: scroll;
+      overflow-x: hidden;
+      text-align: left;
+      animation-name: modalopen;
+      animation-duration: 0.5s;
+    }
 
-
+    .face-modal {
+      position: absolute;
+      font-size: 3vw;
+      height: 80%;
+      width: 80%;
+      margin: auto;
+      top: 0;
+      right: 0;
+      bottom: 0;
+      left: 0;
+      padding: 5vh;
+      background-color: rgba(0, 0, 0, 0.75);
+      z-index: 1000;
+      overflow: scroll;
+      overflow-x: hidden;
+      text-align: left;
+      animation-name: modalopen;
+      animation-duration: 0.5s;
+    }
   </style>
 </head>
 
@@ -236,6 +273,77 @@
     </div>
   </div>
 
+  <div class="goal-modal hidden">
+    <div class="goal-modal-body">
+      <br>
+      <h1>/// Short Term Goals ///</h1>
+      <br>
+      *Successful album release following 3-4 singles accompanied by playlist support from DSPs, tastemaker press, and a release party + art installation<br><br>
+
+      *Support album release with lots of travel + live bookings, opening and support slots for larger artists, and begin touring to grow brand recognition<br><br>
+
+      *Grow streams and audience size to 375k monthly listeners, 1000 highly engaged fans in NA<br><br>
+
+      *$5000/mo income from show bookings, streams, engineering work, session production / publishing<br><br>
+
+      <h1>/// Long Term Goals ///</h1>
+      <br>
+      *Become a global staple of electronic music, delivering an experience that appeals to purveyors of both underground and accessible realms of music<br><br>
+
+      *Create an immersive visual universe through live experience, interactive web and digital media<br><br>
+
+      *Use audience scale and brand recognition to build foundation for the creation of interactive installation artwork and experiences, brought to major cities globally<br><br>
+
+      *Income from touring globally, publishing, streaming of original music, sync, collaboration with larger brands (fashion show design), installation commission and ticket sales. <br><br>
+
+
+
+    </div>
+    <div class="modal-close" onClick="document.querySelector('.goal-modal').classList.add('hidden')">
+      X
+    </div>
+  </div>
+
+  <div class="face-modal hidden">
+    <div class="face-modal-body">
+      <br>
+      <h1>/// Influences ///</h1>
+      <br>
+      Bill Evans<br>
+Black Coffee<br>
+Burial<br>
+Chaos In The CBD<br>
+Disclosure<br>
+DJ Seinfeld<br>
+Floating Points<br>
+Fouk<br>
+Four Tet<br>
+Frank Ocean<br>
+Jacques Greene<br>
+Kaytranada<br>
+Kamaal Williams / Henry Wu<br>
+Mala<br>
+Mall Grab<br>
+Miles Davis<br>
+Peggy Gou<br>
+Ross From Friends<br>
+Skream<br>
+Tame Impala<br>
+The Brothers Johnson<br>
+Tower Of Power<br>
+Tyler, The Creator<br>
+
+
+
+
+
+
+    </div>
+    <div class="modal-close" onClick="document.querySelector('.face-modal').classList.add('hidden')">
+      X
+    </div>
+  </div>
+
 
   <div id="container"></div>
   <script src="js/three.js"></script>
@@ -263,6 +371,8 @@
     var container = document.getElementById('container');
     var loader = document.getElementById('loader');
     var starModal = document.querySelector('.star-modal');
+    var goalModal = document.querySelector('.goal-modal');
+    var faceModal = document.querySelector('.face-modal');
 
     // 3D MODEL NAMES
     var starModelName = 'star';
@@ -280,8 +390,9 @@
     var osModelName = 'OS';
     var wModelName = 'w';
     var boxModel = 'box';
+    var faceModel = 'face';
     var numLoadedModels = 0;
-    var totalNumOfModels = 15; // NOTE: must match the number of models we load
+    var totalNumOfModels = 16; // NOTE: must match the number of models we load
 
 
     // overlay div for device orientation API
@@ -330,7 +441,8 @@
       gltfLoaderInstance.load('models/lookup.gltf', onDefaultGLTFLoadSuccess);
       gltfLoaderInstance.load('models/OS.gltf', onDefaultGLTFLoadSuccess);
       gltfLoaderInstance.load('models/w.gltf', onDefaultGLTFLoadSuccess);
-        gltfLoaderInstance.load('models/box.gltf', onBoxLoadSuccess);
+      gltfLoaderInstance.load('models/box.gltf', onBoxLoadSuccess);
+        gltfLoaderInstance.load('models/face.gltf', onFaceLoadSuccess);
     }
 
     function init() {
@@ -590,22 +702,47 @@
     }
 
     function onBoxLoadSuccess(gltf) {
-      console.log("Done loading cart gltf model that needs customization");
+      console.log("Done loading box gltf model that needs customization");
 
       // Do standard stuff we do for all GLTF models that get loaded
       ++numLoadedModels;
       var model = gltf.scene;
       placeGLTFModelInSceneAndAnimate(gltf);
       model.children.forEach(function(child) {
-        child.children.forEach(function(grandchild) {
-          // Add raycaster hit detection callback
-          grandchild.userData.hitCallback = function() {
-            // open link in new tab
-            window.open("https://instagram.com/worldwidewev");
-          };
-          // Add mesh to list of hittable meshes
-          hittableMeshes.push(grandchild);
-        });
+
+        // Add raycaster hit detection callback
+        child.userData.hitCallback = function() {
+          // open link in new tab
+          //window.open("https://instagram.com/worldwidewev");
+          goalModal.classList.remove('hidden');
+        };
+        // Add mesh to list of hittable meshes
+        hittableMeshes.push(child);
+      });
+
+      // END CUSTOMIZATION HERE
+
+      // Start animation loop if we were ready
+      //checkIfAllModelsAreLoaded();
+    }
+
+    function onFaceLoadSuccess(gltf) {
+      console.log("Done loading box gltf model that needs customization");
+
+      // Do standard stuff we do for all GLTF models that get loaded
+      ++numLoadedModels;
+      var model = gltf.scene;
+      placeGLTFModelInSceneAndAnimate(gltf);
+      model.children.forEach(function(child) {
+
+        // Add raycaster hit detection callback
+        child.userData.hitCallback = function() {
+          // open link in new tab
+          //window.open("https://instagram.com/worldwidewev");
+          faceModal.classList.remove('hidden');
+        };
+        // Add mesh to list of hittable meshes
+        hittableMeshes.push(child);
       });
 
       // END CUSTOMIZATION HERE
@@ -679,7 +816,7 @@
 
       if (loader.classList.contains('hidden') === false) {
         // don't do hit detection while the loader is showing
-       return;
+        return;
       }
 
       var intersects = raycaster.intersectObjects(hittableMeshes, true);
