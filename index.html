@@ -190,34 +190,6 @@
       animation-duration: 0.5s;
     }
 
-    .face-modal {
-      position: absolute;
-      font-size: 3vw;
-      height: 80%;
-      width: 80%;
-      margin: auto;
-      top: 0;
-      right: 0;
-      bottom: 0;
-      left: 0;
-      padding: 5vh;
-      background-color: rgba(0, 0, 0, 0.75);
-      z-index: 1000;
-      overflow: scroll;
-      overflow-x: hidden;
-      text-align: left;
-      animation-name: modalopen;
-      animation-duration: 0.5s;
-    }
-
-    #audio {
-      position: absolute;
-      z-index: 10000;
-      bottom: 0;
-      left: 0;
-      right: 0;
-
-    }
 
 
   </style>
@@ -258,28 +230,11 @@
       -AR camera connected to sticker or physical merch for UGC<br><br>
       -360 “VR” music video using mobile device orientation<br><br>
 
-
     </div>
     <div class="modal-close" onClick="document.querySelector('.star-modal').classList.add('hidden')">
       X
     </div>
   </div>
-
-  <div class="face-modal hidden">
-    <div class="face-modal-body">
-      <br>
-      <h1>/// FACE MODAL ///</h1>
-
-    </div>
-    <div class="modal-close" onClick="document.querySelector('.face-modal').classList.add('hidden')">
-      X
-    </div>
-  </div>
-<div id="audio" class="hidden">
-  <audio controls>
-    <source src="poly.mp3" type="audio/mp3"/>
-  </audio>
-</div>
 
 
   <div id="container"></div>
@@ -295,7 +250,7 @@
     var controls;
     var container;
     var raycaster;
-    var mouse;
+    var mouse = new THREE.Vector2();
     var worldScene = null;
     var renderer = null;
     var camera = null;
@@ -306,16 +261,14 @@
     var hittableMeshes = [];
 
     var container = document.getElementById('container');
-    var audio = document.getElementById('audio');
     var loader = document.getElementById('loader');
     var starModal = document.querySelector('.star-modal');
-    var faceModal = document.querySelector('.face-modal');
 
     // 3D MODEL NAMES
     var starModelName = 'star';
     var cdModelName = 'cd';
     var tvModelName = 'tv';
-    var faceModel = 'face';
+    var polyModel = 'poly';
     var starbaseModelName = 'starbase'
     var runway1ModelName = 'runway';
     var runway2ModelName = 'runway2';
@@ -325,8 +278,10 @@
     var islandsModelName = 'islands';
     var lookupModelName = 'lookup';
     var osModelName = 'OS';
+    var wModelName = 'w';
+    var boxModel = 'box';
     var numLoadedModels = 0;
-    var totalNumOfModels = 12; // NOTE: must match the number of models we load
+    var totalNumOfModels = 15; // NOTE: must match the number of models we load
 
 
     // overlay div for device orientation API
@@ -356,17 +311,17 @@
       var gltfLoaderInstance = new THREE.GLTFLoader(manager);
 
       /*
-       * Load in all 10 GLTF models:
+       * Load in all GLTF models:
        * - If model requires no customization use onDefaultGLTFLoadSuccess
        * - If model requires customization after loading create a custom handler
        *   and made sure it follows the template of onStarLoadSuccess
        */
       gltfLoaderInstance.load('models/star.gltf', onStarLoadSuccess);
       gltfLoaderInstance.load('models/cd.gltf', onCDLoadSuccess);
-      gltfLoaderInstance.load('models/face.gltf', onFaceLoadSuccess);
+      gltfLoaderInstance.load('models/poly.gltf', onDefaultGLTFLoadSuccess);
       gltfLoaderInstance.load('models/tv.gltf', onDefaultGLTFLoadSuccess);
       gltfLoaderInstance.load('models/starbase.gltf', onDefaultGLTFLoadSuccess);
-      gltfLoaderInstance.load('models/runway.gltf', onDefaultGLTFLoadSuccess);
+      gltfLoaderInstance.load('models/runway.gltf', onRunwayLoadSuccess);
       gltfLoaderInstance.load('models/runway2.gltf', onDefaultGLTFLoadSuccess);
       gltfLoaderInstance.load('models/model1a.gltf', onDefaultGLTFLoadSuccess);
       gltfLoaderInstance.load('models/model2a.gltf', onDefaultGLTFLoadSuccess);
@@ -374,6 +329,8 @@
       gltfLoaderInstance.load('models/islands.gltf', onDefaultGLTFLoadSuccess);
       gltfLoaderInstance.load('models/lookup.gltf', onDefaultGLTFLoadSuccess);
       gltfLoaderInstance.load('models/OS.gltf', onDefaultGLTFLoadSuccess);
+      gltfLoaderInstance.load('models/w.gltf', onDefaultGLTFLoadSuccess);
+        gltfLoaderInstance.load('models/box.gltf', onBoxLoadSuccess);
     }
 
     function init() {
@@ -412,7 +369,7 @@
       var grid = new THREE.GridHelper(500, 50, 0xbfbfbf, 0xbfbfbf);
       grid.material.opacity = 0.25;
       grid.material.transparent = false;
-      grid.position.y = -20;
+      grid.position.y = -22;
       worldScene.add(grid);
 
 
@@ -472,9 +429,8 @@
       iframe.style.left = '0';
       iframe.src = 'https://www.youtube.com/embed/Kmql7206JjI';
       //?playsinline=1
-      //iframe.allow = "accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture";
-      //iframe.allowfullscreen = true;
       div.appendChild(iframe);
+
 
       var cssObject = new THREE.CSS3DObject(div);
       cssObject.scale.multiplyScalar(1 / 50); // for some reason default is really big
@@ -510,14 +466,15 @@
       } else {
         controls = new THREE.OrbitControls(camera, renderer.domElement);
         controls = new THREE.OrbitControls(camera, cssRenderer.domElement);
-        controls.minPolarAngle = Math.PI / 2 - 0.2;
-        controls.enablePan = false;
-        controls.enableZoom = false;
+        //controls.minPolarAngle = Math.PI / 2 - 0.2;
+        //controls.enablePan = false;
+        //controls.enableZoom = false;
       }
 
       // For click+hit detection
       raycaster = new THREE.Raycaster();
-      mouse = new THREE.Vector2();
+      //raycaster.near = 1;
+
 
 
       // keep all renderers correctly sized stuff
@@ -574,38 +531,7 @@
       // END CUSTOMIZATION HERE
 
       // Start animation loop if we were ready
-      checkIfAllModelsAreLoaded();
-    }
-
-    function onFaceLoadSuccess(gltf) {
-      console.log("Done loading face gltf model that needs customization");
-
-      // Do standard stuff we do for all GLTF models that get loaded
-      ++numLoadedModels;
-      var model = gltf.scene;
-      placeGLTFModelInSceneAndAnimate(gltf);
-
-      // START CUSTOMIZATION HERE
-
-      // In this intance let's add hit detection and open a modal
-      model.children.forEach(function(child) {
-        child.children.forEach(function(grandchild) {
-          // Add raycaster hit detection callback
-          grandchild.userData.hitCallback = function() {
-            // open link in new tab
-            //window.open("https://itunes.apple.com/us/artist/wev/1356660469");
-            // show the modal
-            faceModal.classList.remove('hidden');
-          };
-          // Add mesh to list of hittable meshes
-          hittableMeshes.push(grandchild);
-        });
-      });
-
-      // END CUSTOMIZATION HERE
-
-      // Start animation loop if we were ready
-      checkIfAllModelsAreLoaded();
+      //checkIfAllModelsAreLoaded();
     }
 
     function onCDLoadSuccess(gltf) {
@@ -635,7 +561,57 @@
       // END CUSTOMIZATION HERE
 
       // Start animation loop if we were ready
-      checkIfAllModelsAreLoaded();
+      //checkIfAllModelsAreLoaded();
+    }
+
+    function onRunwayLoadSuccess(gltf) {
+      console.log("Done loading cart gltf model that needs customization");
+
+      // Do standard stuff we do for all GLTF models that get loaded
+      ++numLoadedModels;
+      var model = gltf.scene;
+      placeGLTFModelInSceneAndAnimate(gltf);
+      model.children.forEach(function(child) {
+        child.children.forEach(function(grandchild) {
+          // Add raycaster hit detection callback
+          grandchild.userData.hitCallback = function() {
+            // open link in new tab
+            window.open("https://worldwidewev.bigcartel.com/");
+          };
+          // Add mesh to list of hittable meshes
+          hittableMeshes.push(grandchild);
+        });
+      });
+
+      // END CUSTOMIZATION HERE
+
+      // Start animation loop if we were ready
+      //checkIfAllModelsAreLoaded();
+    }
+
+    function onBoxLoadSuccess(gltf) {
+      console.log("Done loading cart gltf model that needs customization");
+
+      // Do standard stuff we do for all GLTF models that get loaded
+      ++numLoadedModels;
+      var model = gltf.scene;
+      placeGLTFModelInSceneAndAnimate(gltf);
+      model.children.forEach(function(child) {
+        child.children.forEach(function(grandchild) {
+          // Add raycaster hit detection callback
+          grandchild.userData.hitCallback = function() {
+            // open link in new tab
+            window.open("https://instagram.com/worldwidewev");
+          };
+          // Add mesh to list of hittable meshes
+          hittableMeshes.push(grandchild);
+        });
+      });
+
+      // END CUSTOMIZATION HERE
+
+      // Start animation loop if we were ready
+      //checkIfAllModelsAreLoaded();
     }
 
     function onDefaultGLTFLoadSuccess(gltf) {
@@ -655,6 +631,7 @@
       model.position.set(0, -5, 0);
       model.rotation.y = 3.14159;
       worldScene.add(model);
+      worldScene.updateMatrixWorld();
 
       worldScene.traverse(function(model) {
         model.frustumCulled = false;
@@ -680,8 +657,6 @@
         console.log("All models loaded, time to start animating...");
         // Remove loader
         loader.className += " hidden";
-        //Add Audio Player
-        audio.classList.remove('hidden');
         // Set all mixer animations to time 0
         mixers.forEach(function(mixer) {
           mixer.setTime(0);
@@ -704,7 +679,7 @@
 
       if (loader.classList.contains('hidden') === false) {
         // don't do hit detection while the loader is showing
-        return;
+       return;
       }
 
       var intersects = raycaster.intersectObjects(hittableMeshes, true);
