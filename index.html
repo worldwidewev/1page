@@ -235,7 +235,11 @@
 <body>
   <div id="overlay">
     <div>
-      <button id="startButton">ENTER</button>
+      <button id="startButton">EXPERIENCE</button>
+    </div>
+
+    <div>
+      <button id="pdfButton">PDF VERSION</button>
     </div>
   </div>
   <div id="loader">
@@ -396,6 +400,10 @@ Tyler, The Creator<br>
 
 
     // overlay div for device orientation API
+    var pdfButton = document.getElementById('pdfButton');
+    pdfButton.addEventListener('click', function() {
+    window.open("https://docs.google.com/document/d/1azWtmazmtxk8SXuo0YweZy3vsKTFmLtQ5G-v4IUIvlU/edit?usp=sharing");
+  });
     var startButton = document.getElementById('startButton');
     // when button is hit, we load and initalize the experience
     startButton.addEventListener('click', function() {
